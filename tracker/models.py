@@ -54,8 +54,9 @@ class ChoiceBid(models.Model):
 	amount = models.DecimalField(decimal_places=2,max_digits=20)
 	class Meta:
 		db_table = 'ChoiceBid'
+		verbose_name = 'Choice Bid'
 	def __unicode__(self):
-		return str(self.optionId) + ' ' + str(self.donationId) + ' (' + str(self.amount) + ')'
+		return str(self.optionId) + ' (' + str(self.donationId.donorId) + ') (' + str(self.amount) + ')'
 
 class ChoiceOption(models.Model):
 	optionId = models.IntegerField(primary_key=True,editable=False)
