@@ -46,6 +46,16 @@ class Choice(models.Model):
 		unique_together = ('speedRun', 'name')
 	def __unicode__(self):
 		return self.speedRun.name + ' -- ' + self.name
+		
+class ChoiceBid(models.Model):
+	choiceBidId = models.IntegerField(primary_key=True,editable=False)
+	optionId = models.ForeignKey('ChoiceOption',db_column='optionId')
+	donationId = models.ForeignKey('Donation',db_column='donationId')
+	amount = models.DecimalField(decimal_places=2,max_digits=20)
+	class Meta:
+		db_table = 'ChoiceBid'
+	def __unicode__(self):
+		return str(self.optionId) + ' ' + str(self.donationId) + ' (' + str(self.amount) + ')'
 
 class ChoiceOption(models.Model):
 	optionId = models.IntegerField(primary_key=True,editable=False)
