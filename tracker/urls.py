@@ -12,4 +12,6 @@ urlpatterns = patterns('tracker.views',
 	url(r'^donation/(?P<id>-?\d+)/$', 'donation'),
 	url(r'^games/$', 'gameindex'),
 	url(r'^game/(?P<id>-?\d+)/$', 'game'),
+	url(r'^prizes/$', 'prizeindex'),
+	url(r'^prize/(?P<id>-?\d+)/$', 'prize'),
 )

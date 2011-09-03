@@ -118,6 +118,10 @@ class Donor(models.Model):
 	lastName = models.CharField(max_length=32)
 	class Meta:
 		db_table = 'Donor'
+		permissions = (
+			('view_usernames', 'Can view full usernames'),
+			('view_emails', 'Can view email addresses'),
+		)
 	def full(self):
 		return str(self.email) + ' (' + str(self) + ')'
 	def __unicode__(self):
