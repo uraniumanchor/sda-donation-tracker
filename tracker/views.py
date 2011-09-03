@@ -62,7 +62,7 @@ def choiceindex(request,db):
 	try:
 		database = checkdb(db)
 		choices = Choice.objects.using(database).values('choiceId', 'name', 'speedRun__speedRunId', 'speedRun__name', 'choiceoption__optionId', 'choiceoption__name').order_by('speedRun__name','name','choiceoption__name').annotate(Sum('choiceoption__choicebid__amount'))
-		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choice })
+		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choices })
 	except ConnectionDoesNotExist:
 		return render_to_response('tracker/baddatabase.html')
 	
