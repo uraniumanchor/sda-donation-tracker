@@ -78,7 +78,7 @@ class Donation(models.Model):
 	readState = models.ForeignKey('DonationReadState',db_column='readState')
 	amount = models.DecimalField(decimal_places=2,max_digits=20)
 	timeReceived = models.DateTimeField()
-	comment = models.TextField(max_length=4096)
+	comment = models.TextField(max_length=4096,null=True,blank=True)
 	class Meta:
 		db_table = 'Donation'
 		get_latest_by = 'timeReceived'
@@ -113,7 +113,7 @@ class DonationReadState(models.Model):
 class Donor(models.Model):
 	donorId = models.IntegerField(primary_key=True,editable=False)
 	email = models.EmailField(max_length=128,unique=True)
-	alias = models.CharField(max_length=32,unique=True)
+	alias = models.CharField(max_length=32,unique=True,null=True,blank=True)
 	firstName = models.CharField(max_length=32)
 	lastName = models.CharField(max_length=32)
 	class Meta:
