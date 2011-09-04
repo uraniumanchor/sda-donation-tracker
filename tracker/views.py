@@ -51,7 +51,7 @@ def index(request,db=''):
 def challengeindex(request,db):
 	try:
 		database = checkdb(db)
-		challenges = Challenge.objects.using(database).values('challengeId', 'name', 'goal', 'speedRun__name', 'speedRun__speedRunId').order_by('speedRun__name').annotate(Sum('challengebid__amount'))
+		challenges = Challenge.objects.using(database).values('challengeId', 'name', 'goal', 'speedRun', 'speedRun__name').order_by('speedRun__name').annotate(Sum('challengebid__amount'))
 		return tracker_response(request, db, 'tracker/challengeindex.html', { 'challenges' : challenges })
 	except ConnectionDoesNotExist:
 		return render_to_response('tracker/baddatabase.html')
@@ -71,7 +71,7 @@ def challenge(request,id,db):
 def choiceindex(request,db):
 	try:
 		database = checkdb(db)
-		choices = Choice.objects.using(database).values('choiceId', 'name', 'speedRun__speedRunId', 'speedRun__name', 'choiceoption__optionId', 'choiceoption__name').annotate(Sum('choiceoption__choicebid__amount')).order_by('speedRun__name','name','-choiceoption__choicebid__amount__sum')
+		choices = Choice.objects.using(database).values('choiceId', 'name', 'speedRun', 'speedRun__name', 'choiceoption', 'choiceoption__name').annotate(Sum('choiceoption__choicebid__amount')).order_by('speedRun__name','name','-choiceoption__choicebid__amount__sum')
 		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choices })
 	except ConnectionDoesNotExist:
 		return render_to_response('tracker/baddatabase.html')
@@ -124,7 +124,7 @@ def donor(request,id,db='default'):
 def donationindex(request,db='default'):
 	try:
 		database = checkdb(db)
-		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('donationId', 'timeReceived', 'amount', 'comment','donorId__donorId','donorId__lastName','donorId__firstName','donorId__email')
+		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('donationId', 'timeReceived', 'amount', 'comment','donorId','donorId__lastName','donorId__firstName','donorId__email')
 		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations })
 	except ConnectionDoesNotExist:
 		return render_to_response('tracker/baddatabase.html')
@@ -153,7 +153,7 @@ def game(request,id,db='default'):
 		database = checkdb(db)
 		game = SpeedRun.objects.using(database).get(pk=id)
 		challenges = Challenge.objects.using(database).filter(speedRun__exact=id).annotate(Sum('challengebid__amount'))
-		choices = Choice.objects.using(database).filter(speedRun__exact=game).values('choiceId', 'name', 'choiceoption__optionId', 'choiceoption__name',).annotate(Sum('choiceoption__choicebid__amount')).order_by('name', '-choiceoption__choicebid__amount__sum')
+		choices = Choice.objects.using(database).filter(speedRun__exact=game).values('choiceId', 'name', 'choiceoption', 'choiceoption__name',).annotate(Sum('choiceoption__choicebid__amount')).order_by('name', '-choiceoption__choicebid__amount__sum')
 		return tracker_response(request, db, 'tracker/game.html', { 'game' : game, 'challenges' : challenges, 'choices' : choices })
 	except ObjectDoesNotExist:
 		return render_to_response('tracker/badobject.html')
@@ -163,7 +163,7 @@ def game(request,id,db='default'):
 def prizeindex(request,db='default'):
 	try:
 		database = checkdb(db)
-		prizes = Prize.objects.using(database).values('name', 'description', 'image', 'donor__firstName', 'donor__lastName', 'donor__email')
+		prizes = Prize.objects.using(database).values('name', 'description', 'image', 'donor', 'donor__firstName', 'donor__lastName', 'donor__email')
 		print prizes
 		return tracker_response(request, db, 'tracker/prizeindex.html', { 'prizes' : prizes })
 	except ConnectionDoesNotExist:
