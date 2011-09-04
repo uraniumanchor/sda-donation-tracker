@@ -3,6 +3,12 @@ from django.shortcuts import render_to_response
 from django.db.models import Count,Sum,Max,Avg
 from django.db.utils import ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponseRedirect
+from django.template import RequestContext
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 from donations.tracker.models import *
 from donations import settings
 import django.shortcuts
@@ -19,23 +25,50 @@ def checkdb(db):
 	if db=='default':
 		raise ConnectionDoesNotExist
 	database = db
-	if database=='': database='default'
+	if database=='' or database==None: database='default'
 	if database[-1:]=='/': database=database[:-1]
 	if database not in settings.DATABASES:
 		raise ConnectionDoesNotExist
 	return database
+	
+def fixorder(queryset, orderdict, sort, order):
+	if len(orderdict[sort]) == 2:
+		queryset = queryset.order_by(orderdict[sort][0], orderdict[sort][1])
+	else:
+		queryset = queryset.order_by(orderdict[sort])
+	if order == -1:
+		queryset = queryset.reverse()
+	return queryset
 
 def redirect(request):
 	return django.shortcuts.redirect('tracker/')
 
-def tracker_response(request, db, template, dict):
-	dict.update({ 'dbtitle' : settings.DATABASES[checkdb(db)]['COMMENT'], 'usernames' : request.user.has_perm('tracker.view_usernames'), 'emails' : request.user.has_perm("tracker.view_emails"), 'djangoversion' : dv(), 'pythonversion' : pv(), 'db' : db })
-	return render_to_response(template, dict)
+@csrf_protect
+@never_cache
+def login(request):
+	redirect_to = request.REQUEST.get('next', '/')
+	if len(redirect_to) == 0 or redirect_to[0] != '/':
+		redirect_to = '/' + redirect_to
+	while redirect_to[:2] == '//':
+		redirect_to = '/' + redirect_to[2:]
+	if request.method == 'POST':
+		form = AuthenticationForm(data=request.POST)
+		if form.is_valid():
+			auth_login(request, form.get_user())
+	return django.shortcuts.redirect(redirect_to)
+
+def logout(request):
+	auth_logout(request)
+	return django.shortcuts.redirect(request.META.get('HTTP_REFERER', '/'))	
+	
+def tracker_response(request, db, template, dict={}):
+	dict.update({ 'dbtitle' : settings.DATABASES[checkdb(db)]['COMMENT'], 'usernames' : request.user.has_perm('tracker.view_usernames'), 'emails' : request.user.has_perm("tracker.view_emails"), 'djangoversion' : dv(), 'pythonversion' : pv(), 'db' : db, 'user' : request.user, 'form' : AuthenticationForm(request), 'next' : request.path })
+	return render_to_response(template, dict, context_instance=RequestContext(request))
 	
 def dbindex(request):
 	dbs = settings.DATABASES.copy()
 	del dbs['default']
-	return render_to_response('tracker/dbindex.html', { 'databases' : dbs })
+	return trackerresponse(request, None, 'tracker/dbindex.html', { 'databases' : dbs })
 
 def index(request,db=''):
 	try:
@@ -61,7 +94,6 @@ def challenge(request,id,db):
 		database = checkdb(db)
 		challenge = Challenge.objects.get(pk=id)
 		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__donorId', 'donation__timeReceived', 'donation__donorId__firstName', 'donation__donorId__lastName', 'donation__donorId__email')
-		print bids
 		return tracker_response(request, db, 'tracker/challenge.html', { 'challenge' : challenge, 'bids' : bids })
 	except ObjectDoesNotExist:
 		return render_to_response('tracker/badobject.html')
@@ -100,9 +132,20 @@ def choiceoption(request,id,db='default'):
 
 def donorindex(request,db='default'):
 	try:
+		orderdict = { 
+			'name' : ('lastName', 'firstName'),
+			'total' : ('donation__amount__sum'),
+			'max' : ('donation__amount__max'),
+			'avg' : ('donation__amount__avg')
+		}
+		sort = request.GET.get('sort', 'name')
+		if sort not in orderdict:
+			sort = 'name'
+		order = int(request.GET.get('order', '1'))
 		database = checkdb(db)
 		locale.setlocale( locale.LC_ALL, '')
-		donors = Donor.objects.using(database).filter(lastName__isnull=False).order_by('lastName', 'firstName').annotate(Sum('donation__amount'), Count('donation__amount'), Max('donation__amount'), Avg('donation__amount'))
+		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(Sum('donation__amount'), Count('donation__amount'), Max('donation__amount'), Avg('donation__amount'))
+		donors = fixorder(donors, orderdict, sort, order)
 		return tracker_response(request, db, 'tracker/donorindex.html', { 'donors' : donors })
 	except ConnectionDoesNotExist:
 		return render_to_response('tracker/baddatabase.html')
@@ -123,8 +166,18 @@ def donor(request,id,db='default'):
 	
 def donationindex(request,db='default'):
 	try:
+		orderdict = { 
+			'name' : ('donorId__lastName', 'donorId__firstName'),
+			'amount' : ('amount'),
+			'time' : ('timeReceived'),
+		}
+		sort = request.GET.get('sort', 'time')
+		if sort not in orderdict:
+			sort = 'time'
+		order = int(request.GET.get('order', '-1'))
 		database = checkdb(db)
 		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('donationId', 'timeReceived', 'amount', 'comment','donorId','donorId__lastName','donorId__firstName','donorId__email')
+		donations = fixorder(donations, orderdict, sort, order)
 		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations })
 	except ConnectionDoesNotExist:
 		return render_to_response('tracker/baddatabase.html')
@@ -164,7 +217,6 @@ def prizeindex(request,db='default'):
 	try:
 		database = checkdb(db)
 		prizes = Prize.objects.using(database).values('name', 'description', 'image', 'donor', 'donor__firstName', 'donor__lastName', 'donor__email')
-		print prizes
 		return tracker_response(request, db, 'tracker/prizeindex.html', { 'prizes' : prizes })
 	except ConnectionDoesNotExist:
 		return render_to_response('tracker/baddatabase.html')
