@@ -130,20 +130,23 @@ class Donor(models.Model):
 class Prize(models.Model):
 	prizeId = models.IntegerField(primary_key=True,editable=False)
 	name = models.CharField(max_length=64,unique=True)
-	image = models.URLField(max_length=1024,db_column='imageURL')
+	image = models.URLField(max_length=1024,db_column='imageURL',null=True,blank=True)
 	description = models.TextField(max_length=1024)
 	donor = models.ForeignKey('Donor',db_column='donorId')
 	class Meta:
 		db_table = 'Prize'
+		ordering = [ 'name' ]
 	def __unicode__(self):
 		return str(self.name)
 		
 class SpeedRun(models.Model):
 	speedRunId = models.IntegerField(primary_key=True,editable=False)
 	name = models.CharField(max_length=64,unique=True)
+	order = models.IntegerField(unique=True)
 	description = models.TextField(max_length=1024)
 	class Meta:
 		db_table = 'SpeedRun'
 		verbose_name = 'Speed Run'
+		ordering = [ 'order' ]
 	def __unicode__(self):
 		return str(self.name)
