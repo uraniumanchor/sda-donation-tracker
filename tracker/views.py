@@ -63,7 +63,21 @@ def logout(request):
 	
 def tracker_response(request, db=None, template='tracker/index.html', dict={}, status=200):
 	database = checkdb(db)
-	dict.update({ 'db' : db, 'static_url' : settings.STATIC_URL, 'dbtitle' : settings.DATABASES[database]['COMMENT'], 'usernames' : request.user.has_perm('tracker.view_usernames'), 'emails' : request.user.has_perm("tracker.view_emails"), 'djangoversion' : dv(), 'pythonversion' : pv(), 'user' : request.user, 'form' : AuthenticationForm(request), 'next' : request.path })
+	usernames = request.user.has_perm('tracker.view_usernames')
+	emails = request.user.has_perm('tracker.view_emails')
+	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
+	#print request.user.get_group_permissions()
+	dict.update({ 'db' : db,
+		'static_url' : settings.STATIC_URL,
+		'dbtitle' : settings.DATABASES[database]['COMMENT'],
+		'usernames' : usernames,
+		'emails' : emails,
+		'bidtracker' : bidtracker,
+		'djangoversion' : dv(),
+		'pythonversion' : pv(),
+		'user' : request.user,
+		'form' : AuthenticationForm(request),
+		'next' : request.path })
 	return render(request, template, dictionary=dict, status=status)
 	
 def dbindex(request):

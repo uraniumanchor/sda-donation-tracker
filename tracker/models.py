@@ -8,7 +8,7 @@ class BidState(models.Model):
 		db_table = 'BidState'
 		verbose_name = 'Bid State'
 	def __unicode__(self):
-		return str(self.bidStateId)
+		return unicode(self.bidStateId)
 
 class Challenge(models.Model):
 	challengeId = models.IntegerField(primary_key=True,editable=False)
@@ -33,7 +33,7 @@ class ChallengeBid(models.Model):
 		verbose_name = 'Challenge Bid'
 		ordering = [ '-donation__timeReceived' ]
 	def __unicode__(self):
-		return str(self.challenge) + ' -- ' + str(self.donation)
+		return unicode(self.challenge) + ' -- ' + unicode(self.donation)
 		
 class Choice(models.Model):
 	choiceId = models.IntegerField(primary_key=True,editable=False)
@@ -56,7 +56,7 @@ class ChoiceBid(models.Model):
 		db_table = 'ChoiceBid'
 		verbose_name = 'Choice Bid'
 	def __unicode__(self):
-		return str(self.optionId) + ' (' + str(self.donationId.donorId) + ') (' + str(self.amount) + ')'
+		return unicode(self.optionId) + ' (' + unicode(self.donationId.donorId) + ') (' + unicode(self.amount) + ')'
 
 class ChoiceOption(models.Model):
 	optionId = models.IntegerField(primary_key=True,editable=False)
@@ -67,7 +67,7 @@ class ChoiceOption(models.Model):
 		verbose_name = 'Choice Option'
 		unique_together = ('choice', 'name')
 	def __unicode__(self):
-		return str(self.choice) + ' -- ' + self.name
+		return unicode(self.choice) + ' -- ' + self.name
 
 class Donation(models.Model):
 	donationId = models.IntegerField(primary_key=True,editable=False)
@@ -84,7 +84,7 @@ class Donation(models.Model):
 		get_latest_by = 'timeReceived'
 		ordering = [ '-timeReceived' ]
 	def __unicode__(self):
-		return str(self.donorId) + ' (' + str(self.amount) + ') (' + str(self.timeReceived) + ')'
+		return unicode(self.donorId) + ' (' + unicode(self.amount) + ') (' + unicode(self.timeReceived) + ')'
 		
 class DonationBidState(models.Model):
 	donationBidStateId = models.CharField(primary_key=True,max_length=16,unique=True)
@@ -123,9 +123,9 @@ class Donor(models.Model):
 			('view_emails', 'Can view email addresses'),
 		)
 	def full(self):
-		return str(self.email) + ' (' + str(self) + ')'
+		return unicode(self.email) + ' (' + unicode(self) + ')'
 	def __unicode__(self):
-		return str(self.lastName) + ', ' + str(self.firstName)
+		return unicode(self.lastName) + ', ' + unicode(self.firstName)
 		
 class Prize(models.Model):
 	prizeId = models.IntegerField(primary_key=True,editable=False)
@@ -137,7 +137,7 @@ class Prize(models.Model):
 		db_table = 'Prize'
 		ordering = [ 'name' ]
 	def __unicode__(self):
-		return str(self.name)
+		return unicode(self.name)
 		
 class SpeedRun(models.Model):
 	speedRunId = models.IntegerField(primary_key=True,editable=False)
@@ -149,4 +149,4 @@ class SpeedRun(models.Model):
 		verbose_name = 'Speed Run'
 		ordering = [ 'order' ]
 	def __unicode__(self):
-		return str(self.name)
+		return unicode(self.name)
