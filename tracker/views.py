@@ -62,9 +62,8 @@ def logout(request):
 	return django.shortcuts.redirect(request.META.get('HTTP_REFERER', '/'))	
 	
 def tracker_response(request, db=None, template='tracker/index.html', dict={}, status=200):
-	if db:
-		dict.update({ 'db' : db, 'dbtitle' : settings.DATABASES[checkdb(db)]['COMMENT'] })
-	dict.update({ 'usernames' : request.user.has_perm('tracker.view_usernames'), 'emails' : request.user.has_perm("tracker.view_emails"), 'djangoversion' : dv(), 'pythonversion' : pv(), 'user' : request.user, 'form' : AuthenticationForm(request), 'next' : request.path })
+	database = checkdb(db)
+	dict.update({ 'db' : db, 'dbtitle' : settings.DATABASES[database]['COMMENT'], 'usernames' : request.user.has_perm('tracker.view_usernames'), 'emails' : request.user.has_perm("tracker.view_emails"), 'djangoversion' : dv(), 'pythonversion' : pv(), 'user' : request.user, 'form' : AuthenticationForm(request), 'next' : request.path })
 	return render(request, template, dictionary=dict, status=status)
 	
 def dbindex(request):
