@@ -41,8 +41,6 @@ class RenderTimeNode(template.Node):
 				now = datetime.datetime.now() - time
 			except TypeError:
 				return ''
-			print time
-			print datetime.datetime.now()
 			return '%d.%d seconds' % (now.seconds,now.microseconds)
 		except template.VariableDoesNotExist:
 			return ''
