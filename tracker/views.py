@@ -66,9 +66,9 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	usernames = request.user.has_perm('tracker.view_usernames')
 	emails = request.user.has_perm('tracker.view_emails')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
-	#print request.user.get_group_permissions()
-	dict.update({ 'db' : db,
+	dict.update({
 		'static_url' : settings.STATIC_URL,
+		'db' : db,
 		'dbtitle' : settings.DATABASES[database]['COMMENT'],
 		'usernames' : usernames,
 		'emails' : emails,
@@ -147,14 +147,19 @@ def choiceoption(request,id,db='default'):
 		order = int(request.GET.get('order', '-1'))
 		database = checkdb(db)
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
+		total = ChoiceBid.objects.using(database).filter(optionId__exact=id).aggregate(Sum('amount'))
 		choicebids = ChoiceBid.objects.using(database).values('donationId', 'donationId__donorId', 'donationId__donorId__firstName','donationId__donorId__lastName', 'donationId__donorId__email', 'amount', 'donationId__timeReceived').filter(optionId__exact=id)
 		choicebids = fixorder(choicebids, orderdict, sort, order)
-		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'choicebids' : choicebids })
+		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'total' : total['amount__sum'], 'choicebids' : choicebids })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
+		
 
+def choicebidadd(request,id,db='default'):
+	return index(request,db)
+		
 def donorindex(request,db='default'):
 	try:
 		orderdict = { 
@@ -201,7 +206,7 @@ def donationindex(request,db='default'):
 			sort = 'time'
 		order = int(request.GET.get('order', '-1'))
 		database = checkdb(db)
-		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('donationId', 'timeReceived', 'amount', 'comment','donorId','donorId__lastName','donorId__firstName','donorId__email')
+		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('donationId', 'domain', 'timeReceived', 'amount', 'comment','donorId','donorId__lastName','donorId__firstName','donorId__email')
 		donations = fixorder(donations, orderdict, sort, order)
 		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations })
 	except ConnectionDoesNotExist:

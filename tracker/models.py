@@ -15,7 +15,7 @@ class Challenge(models.Model):
 	speedRun = models.ForeignKey('SpeedRun',db_column='speedRunId')
 	name = models.CharField(max_length=64)
 	goal = models.DecimalField(decimal_places=2,max_digits=20,db_column='goalAmount')
-	description = models.TextField(max_length=1024)
+	description = models.TextField(max_length=1024,null=True,blank=True)
 	#bidState = models.ForeignKey('BidState',db_column='bidState')
 	class Meta:
 		db_table = 'Challenge'
@@ -39,7 +39,7 @@ class Choice(models.Model):
 	choiceId = models.IntegerField(primary_key=True,editable=False)
 	speedRun = models.ForeignKey('SpeedRun',db_column='speedRunId')
 	name = models.CharField(max_length=64)
-	description = models.TextField(max_length=1024)
+	description = models.TextField(max_length=1024,null=True,blank=True)
 	#bidState = models.ForeignKey('BidState',db_column='bidState')
 	class Meta:
 		db_table = 'Choice'
@@ -55,6 +55,7 @@ class ChoiceBid(models.Model):
 	class Meta:
 		db_table = 'ChoiceBid'
 		verbose_name = 'Choice Bid'
+		ordering = [ 'optionId__choice__speedRun__name', 'optionId__choice__name' ]
 	def __unicode__(self):
 		return unicode(self.optionId) + ' (' + unicode(self.donationId.donorId) + ') (' + unicode(self.amount) + ')'
 
@@ -122,10 +123,14 @@ class Donor(models.Model):
 			('view_usernames', 'Can view full usernames'),
 			('view_emails', 'Can view email addresses'),
 		)
+		ordering = ['lastName', 'firstName', 'email']
 	def full(self):
 		return unicode(self.email) + ' (' + unicode(self) + ')'
 	def __unicode__(self):
-		return unicode(self.lastName) + ', ' + unicode(self.firstName)
+		ret = unicode(self.lastName) + ', ' + unicode(self.firstName)
+		if self.alias and len(self.alias) > 0:
+			ret += ' (' + unicode(self.alias) + ')'
+		return ret
 		
 class Prize(models.Model):
 	prizeId = models.IntegerField(primary_key=True,editable=False)
