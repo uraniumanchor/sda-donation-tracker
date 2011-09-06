@@ -155,3 +155,4 @@ class SpeedRun(models.Model):
 		ordering = [ 'order' ]
 	def __unicode__(self):
 		return unicode(self.name)
+	

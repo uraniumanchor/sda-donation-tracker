@@ -9,10 +9,10 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from django import template
 from donations.tracker.models import *
 from donations import settings
 import django.shortcuts
-import locale
 import sys
 
 def dv():
@@ -88,11 +88,8 @@ def dbindex(request):
 def index(request,db=''):
 	try:
 		database = checkdb(db)
-		locale.setlocale( locale.LC_ALL, '')
-		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Max('amount'), Avg('amount'))
-		count = Donation.objects.using(database).filter(amount__gt="0.0").count()
-		total,mx,av = locale.currency(agg['amount__sum'], grouping=True),locale.currency(agg['amount__max'], grouping=True),locale.currency(agg['amount__avg'], grouping=True)
-		return tracker_response(request, db, 'tracker/index.html', { 'count' : count, 'total' : total, 'mx' : mx, 'av' : av })
+		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
+		return tracker_response(request, db, 'tracker/index.html', { 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
@@ -100,10 +97,8 @@ def challengeindex(request,db):
 	try:
 		database = checkdb(db)
 		challenges = Challenge.objects.using(database).values('challengeId', 'name', 'goal', 'speedRun', 'speedRun__name').order_by('speedRun__name').annotate(Sum('challengebid__amount'))
-		total = ChallengeBid.objects.using(database).aggregate(Sum('amount'))
-		if total:
-			total = total['amount__sum']
-		return tracker_response(request, db, 'tracker/challengeindex.html', { 'challenges' : challenges, 'total' : total })
+		agg = ChallengeBid.objects.using(database).aggregate(Sum('amount'), Count('amount'))
+		return tracker_response(request, db, 'tracker/challengeindex.html', { 'challenges' : challenges, 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
@@ -112,7 +107,8 @@ def challenge(request,id,db):
 		database = checkdb(db)
 		challenge = Challenge.objects.get(pk=id)
 		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__donorId', 'donation__timeReceived', 'donation__donorId__firstName', 'donation__donorId__lastName', 'donation__donorId__email')
-		return tracker_response(request, db, 'tracker/challenge.html', { 'challenge' : challenge, 'bids' : bids })
+		agg = ChallengeBid.objects.using(database).filter(challenge__exact=id).aggregate(Sum('amount'), Count('amount'))
+		return tracker_response(request, db, 'tracker/challenge.html', { 'challenge' : challenge, 'bids' : bids, 'agg' : agg })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
@@ -122,10 +118,8 @@ def choiceindex(request,db):
 	try:
 		database = checkdb(db)
 		choices = Choice.objects.using(database).values('choiceId', 'name', 'speedRun', 'speedRun__name', 'choiceoption', 'choiceoption__name').annotate(Sum('choiceoption__choicebid__amount')).order_by('speedRun__name','name','-choiceoption__choicebid__amount__sum')
-		total = ChoiceBid.objects.using(database).aggregate(Sum('amount'))
-		if total:
-			total = total['amount__sum']
-		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choices, 'total' : total })
+		agg = ChoiceBid.objects.using(database).aggregate(Sum('amount'), Count('amount'))
+		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choices, 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
@@ -134,7 +128,8 @@ def choice(request,id,db='default'):
 		database = checkdb(db)
 		choice = Choice.objects.using(database).get(pk=id)
 		options = ChoiceOption.objects.using(database).filter(choice__exact=id).annotate(Sum('choicebid__amount'), Count('choicebid__amount'))
-		return tracker_response(request, db, 'tracker/choice.html', { 'choice' : choice, 'options' : options })
+		agg = ChoiceBid.objects.using(database).filter(optionId__choice__exact=id).aggregate(Sum('amount'), Count('amount'))
+		return tracker_response(request, db, 'tracker/choice.html', { 'choice' : choice, 'options' : options, 'agg' : agg })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
@@ -153,10 +148,10 @@ def choiceoption(request,id,db='default'):
 		order = int(request.GET.get('order', '-1'))
 		database = checkdb(db)
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
-		total = ChoiceBid.objects.using(database).filter(optionId__exact=id).aggregate(Sum('amount'))
+		agg = ChoiceBid.objects.using(database).filter(optionId__exact=id).aggregate(Sum('amount'))
 		choicebids = ChoiceBid.objects.using(database).values('donationId', 'donationId__donorId', 'donationId__donorId__firstName','donationId__donorId__lastName', 'donationId__donorId__email', 'amount', 'donationId__timeReceived').filter(optionId__exact=id)
 		choicebids = fixorder(choicebids, orderdict, sort, order)
-		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'total' : total['amount__sum'], 'choicebids' : choicebids })
+		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'choicebids' : choicebids, 'agg' : agg })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
@@ -179,7 +174,6 @@ def donorindex(request,db='default'):
 			sort = 'name'
 		order = int(request.GET.get('order', '1'))
 		database = checkdb(db)
-		locale.setlocale( locale.LC_ALL, '')
 		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(Sum('donation__amount'), Count('donation__amount'), Max('donation__amount'), Avg('donation__amount'))
 		donors = fixorder(donors, orderdict, sort, order)
 		return tracker_response(request, db, 'tracker/donorindex.html', { 'donors' : donors })
@@ -189,12 +183,11 @@ def donorindex(request,db='default'):
 def donor(request,id,db='default'):
 	try:
 		database = checkdb(db)
-		locale.setlocale( locale.LC_ALL, '')
 		donor = Donor.objects.using(database).get(pk=id)
 		donations = Donation.objects.using(database).filter(donorId__exact=id)
+		comments = 'comments' in request.GET
 		agg = donations.aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
-		total,mx,av = locale.currency(agg['amount__sum'], grouping=True),locale.currency(agg['amount__max'], grouping=True),locale.currency(agg['amount__avg'], grouping=True)
-		return tracker_response(request, db, 'tracker/donor.html', { 'donor' : donor, 'donations' : donations, 'agg' : agg, 'total' : total, 'mx' : mx, 'av' : av })
+		return tracker_response(request, db, 'tracker/donor.html', { 'donor' : donor, 'donations' : donations, 'agg' : agg, 'comments' : comments })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
@@ -214,7 +207,8 @@ def donationindex(request,db='default'):
 		database = checkdb(db)
 		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('donationId', 'domain', 'timeReceived', 'amount', 'comment','donorId','donorId__lastName','donorId__firstName','donorId__email')
 		donations = fixorder(donations, orderdict, sort, order)
-		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations })
+		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
+		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations, 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 
