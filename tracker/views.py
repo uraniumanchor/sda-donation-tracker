@@ -100,7 +100,10 @@ def challengeindex(request,db):
 	try:
 		database = checkdb(db)
 		challenges = Challenge.objects.using(database).values('challengeId', 'name', 'goal', 'speedRun', 'speedRun__name').order_by('speedRun__name').annotate(Sum('challengebid__amount'))
-		return tracker_response(request, db, 'tracker/challengeindex.html', { 'challenges' : challenges })
+		total = ChallengeBid.objects.using(database).aggregate(Sum('amount'))
+		if total:
+			total = total['amount__sum']
+		return tracker_response(request, db, 'tracker/challengeindex.html', { 'challenges' : challenges, 'total' : total })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
@@ -119,7 +122,10 @@ def choiceindex(request,db):
 	try:
 		database = checkdb(db)
 		choices = Choice.objects.using(database).values('choiceId', 'name', 'speedRun', 'speedRun__name', 'choiceoption', 'choiceoption__name').annotate(Sum('choiceoption__choicebid__amount')).order_by('speedRun__name','name','-choiceoption__choicebid__amount__sum')
-		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choices })
+		total = ChoiceBid.objects.using(database).aggregate(Sum('amount'))
+		if total:
+			total = total['amount__sum']
+		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choices, 'total' : total })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
