@@ -14,6 +14,7 @@ from donations.tracker.models import *
 from donations import settings
 import django.shortcuts
 import sys
+import datetime
 
 def dv():
 	return str(django.VERSION[0]) + '.' + str(django.VERSION[1]) + '.' + str(django.VERSION[2])
@@ -62,6 +63,7 @@ def logout(request):
 	return django.shortcuts.redirect(request.META.get('HTTP_REFERER', '/'))	
 	
 def tracker_response(request, db=None, template='tracker/index.html', dict={}, status=200):
+	starttime = datetime.datetime.now()
 	database = checkdb(db)
 	usernames = request.user.has_perm('tracker.view_usernames')
 	emails = request.user.has_perm('tracker.view_emails')
@@ -77,7 +79,8 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		'pythonversion' : pv(),
 		'user' : request.user,
 		'form' : AuthenticationForm(request),
-		'next' : request.path })
+		'next' : request.path,
+		'starttime' : starttime})
 	return render(request, template, dictionary=dict, status=status)
 	
 def dbindex(request):
