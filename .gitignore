@@ -1,4 +1,5 @@
 *.pyc
 *.swp
+sgdq_donations.sql
 uranium_*
 paste

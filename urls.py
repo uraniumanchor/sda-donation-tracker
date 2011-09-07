@@ -11,9 +11,10 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-	url(r'^$', 'donations.tracker.views.redirect'),
-	url(r'^tracker/', include('donations.tracker.urls')),
+    url(r'^$', 'donations.tracker.views.redirect'),
+    url(r'^tracker/', include('donations.tracker.urls')),
     url(r'^admin/', include(admin.site.urls)),
-	url(r'^login/$', 'donations.tracker.views.login'),
-	url(r'^logout/$', 'donations.tracker.views.logout'),
+    url(r'^login/$', 'donations.tracker.views.login'),
+    url(r'^logout/$', 'donations.tracker.views.logout'),
+    url(r'^openid/', include('django_openid_auth.urls')),
 )

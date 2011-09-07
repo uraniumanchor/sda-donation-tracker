@@ -15,6 +15,7 @@ urlpatterns = patterns('tracker.views',
 	url(r'^(?P<db>(\w+/|))game/(?P<id>-?\d+)/$', 'game'),
 	url(r'^(?P<db>(\w+/|))prizes/$', 'prizeindex'),
 	url(r'^dbs/$', 'dbindex'),
+	url(r'^setusername/$', 'setusername'),
 	url(r'^(?P<db>(\w+/|))$', 'index'),
 	url(r'^$', 'index'),
 )

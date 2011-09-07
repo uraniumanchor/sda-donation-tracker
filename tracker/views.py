@@ -11,6 +11,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django import template
 from donations.tracker.models import *
+from donations.tracker.forms import *
 from donations import settings
 import django.shortcuts
 import sys
@@ -78,9 +79,11 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		'djangoversion' : dv(),
 		'pythonversion' : pv(),
 		'user' : request.user,
-		'form' : AuthenticationForm(request),
-		'next' : request.path,
+		'next' : request.REQUEST.get('next', request.path),
 		'starttime' : starttime})
+	if request.user.is_authenticated and request.user.username[:10]=='openiduser':
+		dict.setdefault('form', UsernameForm())
+		return render(request, 'tracker/username.html', dictionary=dict)
 	return render(request, template, dictionary=dict, status=status)
 	
 def dbindex(request):
@@ -95,6 +98,16 @@ def index(request,db=''):
 		return tracker_response(request, db, 'tracker/index.html', { 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
+		
+def setusername(request):
+	if not request.user.is_authenticated or request.user.username[:10]!='openiduser' or request.method != 'POST':
+		return redirect(request)
+	form = UsernameForm(request.POST)
+	if form.is_valid():
+		request.user.username = request.POST['username']
+		request.user.save()
+		return django.shortcuts.redirect(request.POST['next'])
+	return tracker_response(request, template='tracker/username.html', dict={ 'form' : form })
 	
 def challengeindex(request,db):
 	try:
