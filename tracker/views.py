@@ -145,7 +145,7 @@ def choice(request,id,db='default'):
 	try:
 		database = checkdb(db)
 		choice = Choice.objects.using(database).get(pk=id)
-		choicebids = ChoiceBid.objects.using(database).filter(optionId__choice__exact=id).values('optionId', 'donationId', 'donationId__donorId', 'donationId__donorId__lastName', 'donationId__donorId__firstName', 'donationId__donorId__email', 'donationId__timeReceived', 'donationId__comment', 'amount')
+		choicebids = ChoiceBid.objects.using(database).filter(optionId__choice__exact=id).values('optionId', 'donationId', 'donationId__donorId', 'donationId__donorId__lastName', 'donationId__donorId__firstName', 'donationId__donorId__email', 'donationId__timeReceived', 'donationId__comment', 'amount').order_by('donationId__timeReceived')
 		options = ChoiceOption.objects.using(database).filter(choice__exact=id).annotate(Sum('choicebid__amount'), Count('choicebid__amount'))
 		agg = ChoiceBid.objects.using(database).filter(optionId__choice__exact=id).aggregate(Sum('amount'), Count('amount'))
 		comments = 'comments' in request.GET
