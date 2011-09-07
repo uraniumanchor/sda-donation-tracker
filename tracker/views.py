@@ -84,6 +84,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	if request.user.is_authenticated and request.user.username[:10]=='openiduser':
 		dict.setdefault('form', UsernameForm())
 		return render(request, 'tracker/username.html', dictionary=dict)
+	dict.setdefault('form', AuthenticationForm())
 	return render(request, template, dictionary=dict, status=status)
 	
 def dbindex(request):
