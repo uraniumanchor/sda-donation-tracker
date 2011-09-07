@@ -123,9 +123,10 @@ def challenge(request,id,db):
 	try:
 		database = checkdb(db)
 		challenge = Challenge.objects.get(pk=id)
-		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__donorId', 'donation__timeReceived', 'donation__donorId__firstName', 'donation__donorId__lastName', 'donation__donorId__email')
+		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__comment', 'donation__donorId', 'donation__timeReceived', 'donation__donorId__firstName', 'donation__donorId__lastName', 'donation__donorId__email')
+		comments = 'comments' in request.GET
 		agg = ChallengeBid.objects.using(database).filter(challenge__exact=id).aggregate(Sum('amount'), Count('amount'))
-		return tracker_response(request, db, 'tracker/challenge.html', { 'challenge' : challenge, 'bids' : bids, 'agg' : agg })
+		return tracker_response(request, db, 'tracker/challenge.html', { 'challenge' : challenge, 'comments' : comments, 'bids' : bids, 'agg' : agg })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
@@ -166,9 +167,10 @@ def choiceoption(request,id,db='default'):
 		database = checkdb(db)
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
 		agg = ChoiceBid.objects.using(database).filter(optionId__exact=id).aggregate(Sum('amount'))
-		choicebids = ChoiceBid.objects.using(database).values('donationId', 'donationId__donorId', 'donationId__donorId__firstName','donationId__donorId__lastName', 'donationId__donorId__email', 'amount', 'donationId__timeReceived').filter(optionId__exact=id)
+		choicebids = ChoiceBid.objects.using(database).values('donationId', 'donationId__comment', 'donationId__donorId', 'donationId__donorId__firstName','donationId__donorId__lastName', 'donationId__donorId__email', 'amount', 'donationId__timeReceived').filter(optionId__exact=id)
 		choicebids = fixorder(choicebids, orderdict, sort, order)
-		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'choicebids' : choicebids, 'agg' : agg })
+		comments = 'comments' in request.GET
+		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'choicebids' : choicebids, 'comments' : comments, 'agg' : agg })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
