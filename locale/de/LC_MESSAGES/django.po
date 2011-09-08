@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-08 14:34-0600\n"
+"POT-Creation-Date: 2011-09-08 17:09-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "Python code by UraniumAnchor"
 msgstr ""
 
-#: templates/base.html:22
+#: templates/base.html:21
 msgid "Translated By"
 msgstr ""
 
@@ -112,7 +112,8 @@ msgstr ""
 
 #: templates/tracker/challenge.html:14
 #: templates/tracker/challengeindex.html:12 templates/tracker/choice.html:15
-#: templates/tracker/choice.html.py:19 templates/tracker/choiceindex.html:12
+#: templates/tracker/choice.html.py:19 templates/tracker/choice.html:30
+#: templates/tracker/choiceindex.html:12
 #: templates/tracker/choiceoption.html:19 templates/tracker/donation.html:12
 #: templates/tracker/donation.html.py:31 templates/tracker/donation.html:52
 #: templates/tracker/donationindex.html:18 templates/tracker/donor.html:16
@@ -211,6 +212,11 @@ msgstr ""
 msgid "Donation Index"
 msgstr ""
 
+#: templates/tracker/donationindex.html:11 templates/tracker/donor.html:13
+#: templates/tracker/index.html:13
+msgid "Max/Avg Donation"
+msgstr ""
+
 #: templates/tracker/donationindex.html:19
 msgid "Source"
 msgstr ""
@@ -233,10 +239,6 @@ msgstr ""
 
 #: templates/tracker/donor.html:12
 msgid "Total Donations"
-msgstr ""
-
-#: templates/tracker/donor.html:13 templates/tracker/index.html:13
-msgid "Max/Avg Donation"
 msgstr ""
 
 #: templates/tracker/donor.html:43
