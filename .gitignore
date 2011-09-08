@@ -1,6 +1,7 @@
 *.mo
 *.pyc
 *.swp
+.debug
 sgdq_donations.sql
 uranium_*
 paste

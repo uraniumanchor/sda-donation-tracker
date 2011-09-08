@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-07 23:29-0600\n"
+"POT-Creation-Date: 2011-09-08 14:34-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,6 +24,10 @@ msgstr ""
 
 #: templates/base.html:21
 msgid "Python code by UraniumAnchor"
+msgstr ""
+
+#: templates/base.html:22
+msgid "Translated By"
 msgstr ""
 
 #: templates/openid/login.html:17
@@ -100,14 +104,14 @@ msgid "Email"
 msgstr ""
 
 #: templates/tracker/challenge.html:14 templates/tracker/choice.html:29
-#: templates/tracker/choiceoption.html:18 templates/tracker/donor.html:16
-msgid "Time"
+#: templates/tracker/choiceoption.html:18 templates/tracker/donation.html:11
+#: templates/tracker/donationindex.html:17 templates/tracker/donor.html:16
+msgid "Time Received"
 msgstr ""
 
 #: templates/tracker/challenge.html:14
 #: templates/tracker/challengeindex.html:12 templates/tracker/choice.html:15
-#: templates/tracker/choice.html.py:19 templates/tracker/choice.html:30
-#: templates/tracker/choiceindex.html:12
+#: templates/tracker/choice.html.py:19 templates/tracker/choiceindex.html:12
 #: templates/tracker/choiceoption.html:19 templates/tracker/donation.html:12
 #: templates/tracker/donation.html.py:31 templates/tracker/donation.html:52
 #: templates/tracker/donationindex.html:18 templates/tracker/donor.html:16
@@ -121,7 +125,7 @@ msgstr ""
 
 #: templates/tracker/challengeindex.html:5
 #: templates/tracker/challengeindex.html:9
-msgid "Challenges Index"
+msgid "Challenge Index"
 msgstr ""
 
 #: templates/tracker/challengeindex.html:9
@@ -178,10 +182,6 @@ msgstr ""
 
 #: templates/tracker/donation.html:5
 msgid "Donation Detail"
-msgstr ""
-
-#: templates/tracker/donation.html:11 templates/tracker/donationindex.html:17
-msgid "Time Received"
 msgstr ""
 
 #: templates/tracker/donation.html:16 templates/tracker/donationindex.html:20

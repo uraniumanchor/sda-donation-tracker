@@ -1,7 +1,7 @@
 # Django settings for donations project.
 import os
 try:
-    from private import DATABASES
+    from private import DATABASES,ADMINS,INTERNAL_IPS
 except ImportError:
     DATABASES = { 
         'default' : {
@@ -14,16 +14,13 @@ except ImportError:
             'COMMENT': '',
 	     }
     }
+    ADMINS = (
+    )
 
-DEBUG = os.access('/home/ioti/', os.F_OK)
+DEBUG = os.access('.debug', os.F_OK)
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-	'Benjamin Cutler', 'webmaster@uranium-anchor.com'
-)
-
 MANAGERS = ADMINS
-
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -116,6 +113,15 @@ TEMPLATE_DIRS = (
     os.getenv('HOME') + '/django/templates',
     '/home/coolmatty/templates'
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.request",
+    "django.contrib.messages.context_processors.messages")
 
 INSTALLED_APPS = (
     'django.contrib.auth',
