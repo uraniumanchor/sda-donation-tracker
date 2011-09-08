@@ -98,12 +98,16 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		'starttime' : starttime,
 		'authform' : authform })
 	try:
-		if request.user.is_authenticated and request.user.username[:10]=='openiduser':
+		if request.user.username[:10]=='openiduser':
 			dict.setdefault('usernameform', UsernameForm())
 			return render(request, 'tracker/username.html', dictionary=dict)
 		return render(request, template, dictionary=dict, status=status)
 	except TemplateSyntaxError, e:
-		return HttpResponse('Template Syntax Error:\n\n' + unicode(e), status=500)
+		return HttpResponse('Template Syntax Error:\n\n' + unicode(e), mimetype='text/plain', status=500)
+	except Exception, e:
+		if request.user.is_staff:
+			return HttpResponse(unicode(type(e)) + ' ' + unicode(e), mimetype='text/plain', status=500)
+		raise e
 	
 def dbindex(request):
 	dbs = settings.DATABASES.copy()
