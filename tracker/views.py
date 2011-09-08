@@ -94,6 +94,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		'user' : request.user,
 		'profile' : profile,
 		'next' : request.REQUEST.get('next', request.path),
+		'showtime' : showtime,
 		'starttime' : starttime,
 		'authform' : authform })
 	try:
