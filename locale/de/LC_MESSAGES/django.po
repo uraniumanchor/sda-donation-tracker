@@ -1,0 +1,367 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-07 21:36-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: templates/baddatabase.html:4
+msgid "Database Does Not Exist"
+msgstr ""
+
+#: templates/baddatabase.html:8
+msgid "Selected Database Does Not Exist"
+msgstr ""
+
+#: templates/badobject.html:4
+msgid "Object Does Not Exist"
+msgstr ""
+
+#: templates/badobject.html:8
+msgid "Selected Object Does Not Exist In Database"
+msgstr ""
+
+#: templates/challenge.html:5
+msgid "Challenge Detail"
+msgstr ""
+
+#: templates/challenge.html:9 templates/challengeindex.html:12
+#: templates/choice.html:9 templates/choiceindex.html:12
+#: templates/choiceoption.html:9 templates/donation.html:28
+#: templates/donation.html.py:49 templates/game.html:9
+msgid "Game"
+msgstr ""
+
+#: templates/challenge.html:10 templates/challengeindex.html:12
+msgid "Challenge"
+msgstr ""
+
+#: templates/challenge.html:11 templates/challengeindex.html:9
+#: templates/choice.html:11 templates/choiceoption.html:12
+#: templates/donationindex.html:10 templates/donorindex.html:16
+msgid "Total"
+msgstr ""
+
+#: templates/challenge.html:14 templates/choice.html:27
+#: templates/choiceoption.html:16 templates/donation.html:9
+#: templates/donation.html.py:29 templates/donationindex.html:15
+#: templates/donorindex.html:13 templates/game.html:17
+#: templates/game.html.py:36 templates/gameindex.html:12
+#: templates/prizeindex.html:13
+msgid "Name"
+msgstr ""
+
+#: templates/challenge.html:14 templates/choice.html:28
+#: templates/choiceoption.html:17 templates/donationindex.html:16
+#: templates/donorindex.html:14
+msgid "Email"
+msgstr ""
+
+#: templates/challenge.html:14 templates/choice.html:29
+#: templates/choiceoption.html:18 templates/donor.html:16
+msgid "Time"
+msgstr ""
+
+#: templates/challenge.html:14 templates/challengeindex.html:12
+#: templates/choice.html:15 templates/choice.html.py:19
+#: templates/choice.html:30 templates/choiceindex.html:12
+#: templates/choiceoption.html:19 templates/donation.html:12
+#: templates/donation.html.py:31 templates/donation.html:52
+#: templates/donationindex.html:18 templates/donor.html:16
+#: templates/game.html:19 templates/game.html.py:38
+msgid "Amount"
+msgstr ""
+
+#: templates/challenge.html:42
+msgid "Back to Challenge Index"
+msgstr ""
+
+#: templates/challengeindex.html:5 templates/challengeindex.html.py:9
+msgid "Challenges Index"
+msgstr ""
+
+#: templates/challengeindex.html:9 templates/choiceindex.html:9
+#: templates/donationindex.html:9 templates/donorindex.html:9
+#: templates/gameindex.html:9 templates/prizeindex.html:9
+msgid "Event"
+msgstr ""
+
+#: templates/challengeindex.html:12 templates/donation.html:30
+#: templates/game.html:18
+msgid "Goal"
+msgstr ""
+
+#: templates/choice.html:5
+msgid "Choice Detail"
+msgstr ""
+
+#: templates/choice.html:10 templates/choiceindex.html:12
+#: templates/choiceoption.html:10 templates/donation.html:50
+msgid "Choice"
+msgstr ""
+
+#: templates/choice.html:15 templates/choice.html.py:19
+#: templates/choiceindex.html:12 templates/choiceoption.html:11
+#: templates/donation.html:51 templates/game.html:37
+msgid "Option"
+msgstr ""
+
+#: templates/choice.html:59 templates/choiceoption.html:48
+msgid "Back to Choice Index"
+msgstr ""
+
+#: templates/choiceindex.html:5
+msgid "Choice Index"
+msgstr ""
+
+#: templates/choiceindex.html:9
+msgid "Choice Index Total"
+msgstr ""
+
+#: templates/choiceoption.html:5
+msgid "Choice Option Detail"
+msgstr ""
+
+#: templates/commentslink.html:4
+msgid "Hide Comments"
+msgstr ""
+
+#: templates/commentslink.html:6
+msgid "Show Comments"
+msgstr ""
+
+#: templates/dbindex.html:4 templates/dbindex.html.py:8
+msgid "Database Index"
+msgstr ""
+
+#: templates/donation.html:5
+msgid "Donation Detail"
+msgstr ""
+
+#: templates/donation.html:11 templates/donationindex.html:17
+msgid "Time Received"
+msgstr ""
+
+#: templates/donation.html:16 templates/donationindex.html:20
+#: templates/donor.html:16
+msgid "Comment"
+msgstr ""
+
+#: templates/donation.html:24
+msgid "Challenge Bids"
+msgstr ""
+
+#: templates/donation.html:45
+msgid "Choice Bids"
+msgstr ""
+
+#: templates/donation.html:64
+msgid "Donation Source"
+msgstr ""
+
+#: templates/donation.html:69
+msgid "Back to Donation Index"
+msgstr ""
+
+#: templates/donationindex.html:5 templates/donationindex.html.py:10
+msgid "Donation Index"
+msgstr ""
+
+#: templates/donationindex.html:19
+msgid "Source"
+msgstr ""
+
+#: templates/donationindex.html:31 templates/donor.html:21
+msgid "Yes"
+msgstr ""
+
+#: templates/donationindex.html:31 templates/donor.html:21
+msgid "No"
+msgstr ""
+
+#: templates/donor.html:5
+msgid "Donor Detail"
+msgstr ""
+
+#: templates/donor.html:11 templates/donorindex.html:15
+msgid "Alias"
+msgstr ""
+
+#: templates/donor.html:43
+msgid "Back to Donor Index"
+msgstr ""
+
+#: templates/donorindex.html:5 templates/donorindex.html.py:9
+msgid "Donor Index"
+msgstr ""
+
+#: templates/donorindex.html:17
+msgid "Max"
+msgstr ""
+
+#: templates/donorindex.html:17
+msgid "Avg"
+msgstr ""
+
+#: templates/donorindex.html:17
+msgid "Donation"
+msgstr ""
+
+#: templates/game.html:5
+msgid "Game Detail"
+msgstr ""
+
+#: templates/game.html:9 templates/gameindex.html:12
+#: templates/prizeindex.html:14
+msgid "Description"
+msgstr ""
+
+#: templates/game.html:13
+msgid "Challenges"
+msgstr ""
+
+#: templates/game.html:32
+msgid "Choices"
+msgstr ""
+
+#: templates/game.html:53
+msgid "Back to Game Index"
+msgstr ""
+
+#: templates/gameindex.html:5 templates/gameindex.html.py:9
+msgid "Game Index"
+msgstr ""
+
+#: templates/index.html:5
+msgid "Index"
+msgstr ""
+
+#: templates/index.html:11
+msgid "Event:"
+msgstr ""
+
+#: templates/index.html:12
+msgid "Donation Total"
+msgstr ""
+
+#: templates/index.html:13
+msgid "Max/Avg Donation"
+msgstr ""
+
+#: templates/index.html:16
+msgid "View Games"
+msgstr ""
+
+#: templates/index.html:17
+msgid "View Prizes"
+msgstr ""
+
+#: templates/index.html:18
+msgid "View Challenges"
+msgstr ""
+
+#: templates/index.html:19
+msgid "View Choices"
+msgstr ""
+
+#: templates/index.html:20
+msgid "View Donors"
+msgstr ""
+
+#: templates/index.html:21
+msgid "View Donations"
+msgstr ""
+
+#: templates/index.html:23 templates/navfooter.html:6
+msgid "Back to Main Index"
+msgstr ""
+
+#: templates/index.html:25
+msgid "Switch Databases"
+msgstr ""
+
+#: templates/index.html:35
+msgid "Welcome"
+msgstr ""
+
+#: templates/index.html:35
+msgid "Logout"
+msgstr ""
+
+#: templates/login.html:4
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: templates/login.html:6
+msgid "Log In with a Google Account"
+msgstr ""
+
+#: templates/login.html:14
+msgid "Log In"
+msgstr ""
+
+#: templates/navfooter.html:4
+#, python-format
+msgid "Back to %(dbname)s"
+msgstr ""
+
+#: templates/prizeindex.html:5 templates/prizeindex.html.py:9
+msgid "Prize Index"
+msgstr ""
+
+#: templates/prizeindex.html:15
+msgid "Image"
+msgstr ""
+
+#: templates/prizeindex.html:16
+msgid "Winner"
+msgstr ""
+
+#: templates/prizeindex.html:22
+msgid "Link"
+msgstr ""
+
+#: templates/username.html:4
+msgid "Pick a Nickname"
+msgstr ""
+
+#: templates/username.html:8
+msgid "Pick A Username For This Account"
+msgstr ""
+
+#: templates/username.html:11
+msgid "Please correct errors below"
+msgstr ""
+
+#: templates/username.html:25
+msgid "Username"
+msgstr ""
+
+#: templates/username.html:27
+msgid "Submit"
+msgstr ""
+
+#: tracker/forms.py:15
+msgid "Usernames can only contain letters, numbers, and the underscore"
+msgstr ""
+
+#: tracker/forms.py:17
+msgid "Username may not start with 'openiduser'"
+msgstr ""
+
+#: tracker/forms.py:19
+msgid "Username already in use"
+msgstr ""

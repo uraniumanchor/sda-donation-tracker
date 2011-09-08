@@ -71,13 +71,15 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	emails = request.user.has_perm('tracker.view_emails')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
 	profile = None
-	try:
-		profile = request.user.get_profile()
-	except ObjectDoesNotExist:
-		profile = UserProfile()
-		profile.user = request.user
-		profile.save()
-	print profile
+	if request.user.is_authenticated():
+		try:
+			profile = request.user.get_profile()
+		except ObjectDoesNotExist:
+			profile = UserProfile()
+			profile.user = request.user
+			profile.save()
+	if profile:
+		template = profile.prepend + template
 	authform = AuthenticationForm(request.POST)
 	dict.update({
 		'static_url' : settings.STATIC_URL,
@@ -97,7 +99,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		if request.user.is_authenticated and request.user.username[:10]=='openiduser':
 			dict.setdefault('usernameform', UsernameForm())
 			return render(request, 'tracker/username.html', dictionary=dict)
-		return render(request, profile.prepend + template, dictionary=dict, status=status)
+		return render(request, template, dictionary=dict, status=status)
 	except TemplateSyntaxError, e:
 		return HttpResponse('Template Syntax Error:\n\n' + unicode(e), status=500)
 	
