@@ -5,8 +5,9 @@ from django.db.utils import ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect
 from django.template import RequestContext
+from django.template.base import TemplateSyntaxError
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django import template
@@ -92,10 +93,13 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		'next' : request.REQUEST.get('next', request.path),
 		'starttime' : starttime,
 		'authform' : authform })
-	if request.user.is_authenticated and request.user.username[:10]=='openiduser':
-		dict.setdefault('usernameform', UsernameForm())
-		return render(request, 'tracker/username.html', dictionary=dict)
-	return render(request, profile.prepend + template, dictionary=dict, status=status)
+	try:
+		if request.user.is_authenticated and request.user.username[:10]=='openiduser':
+			dict.setdefault('usernameform', UsernameForm())
+			return render(request, 'tracker/username.html', dictionary=dict)
+		return render(request, profile.prepend + template, dictionary=dict, status=status)
+	except TemplateSyntaxError, e:
+		return HttpResponse('Template Syntax Error:\n\n' + unicode(e), status=500)
 	
 def dbindex(request):
 	dbs = settings.DATABASES.copy()
