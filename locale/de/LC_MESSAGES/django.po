@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-07 21:36-0600\n"
+"POT-Creation-Date: 2011-09-07 23:11-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,15 +50,16 @@ msgid "Challenge"
 msgstr ""
 
 #: templates/challenge.html:11 templates/challengeindex.html:9
-#: templates/choice.html:11 templates/choiceoption.html:12
-#: templates/donationindex.html:10 templates/donorindex.html:16
+#: templates/choice.html:11 templates/choiceindex.html:9
+#: templates/choiceoption.html:12 templates/donationindex.html:10
+#: templates/donorindex.html:16
 msgid "Total"
 msgstr ""
 
 #: templates/challenge.html:14 templates/choice.html:27
 #: templates/choiceoption.html:16 templates/donation.html:9
 #: templates/donation.html.py:29 templates/donationindex.html:15
-#: templates/donorindex.html:13 templates/game.html:17
+#: templates/donor.html:9 templates/donorindex.html:13 templates/game.html:17
 #: templates/game.html.py:36 templates/gameindex.html:12
 #: templates/prizeindex.html:13
 msgid "Name"
@@ -66,7 +67,7 @@ msgstr ""
 
 #: templates/challenge.html:14 templates/choice.html:28
 #: templates/choiceoption.html:17 templates/donationindex.html:16
-#: templates/donorindex.html:14
+#: templates/donor.html:10 templates/donorindex.html:14
 msgid "Email"
 msgstr ""
 
@@ -123,12 +124,8 @@ msgstr ""
 msgid "Back to Choice Index"
 msgstr ""
 
-#: templates/choiceindex.html:5
+#: templates/choiceindex.html:5 templates/choiceindex.html.py:9
 msgid "Choice Index"
-msgstr ""
-
-#: templates/choiceindex.html:9
-msgid "Choice Index Total"
 msgstr ""
 
 #: templates/choiceoption.html:5
@@ -200,6 +197,14 @@ msgstr ""
 msgid "Alias"
 msgstr ""
 
+#: templates/donor.html:12
+msgid "Total Donations"
+msgstr ""
+
+#: templates/donor.html:13 templates/index.html:13
+msgid "Max/Avg Donation"
+msgstr ""
+
 #: templates/donor.html:43
 msgid "Back to Donor Index"
 msgstr ""
@@ -255,10 +260,6 @@ msgstr ""
 
 #: templates/index.html:12
 msgid "Donation Total"
-msgstr ""
-
-#: templates/index.html:13
-msgid "Max/Avg Donation"
 msgstr ""
 
 #: templates/index.html:16
@@ -335,7 +336,7 @@ msgid "Link"
 msgstr ""
 
 #: templates/username.html:4
-msgid "Pick a Nickname"
+msgid "Pick a Username"
 msgstr ""
 
 #: templates/username.html:8
