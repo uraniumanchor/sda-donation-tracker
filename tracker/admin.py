@@ -14,4 +14,4 @@ admin.site.register(donations.tracker.models.DonationReadState)
 admin.site.register(donations.tracker.models.Donor)
 admin.site.register(donations.tracker.models.Prize)
 admin.site.register(donations.tracker.models.SpeedRun)
-
+admin.site.register(donations.tracker.models.UserProfile)

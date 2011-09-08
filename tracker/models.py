@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -155,4 +156,12 @@ class SpeedRun(models.Model):
 		ordering = [ 'order' ]
 	def __unicode__(self):
 		return unicode(self.name)
+		
+class UserProfile(models.Model):
+	user = models.ForeignKey(User, unique=True)
+	templateprepend = models.CharField('Template Prepend', max_length=64,blank=True)
+	class Meta:
+		verbose_name = 'User Profile'
+	def __unicode__(self):
+		return unicode(self.user)
 	
