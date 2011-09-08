@@ -17,6 +17,7 @@ from donations import settings
 import django.shortcuts
 import sys
 import datetime
+import settings
 
 def dv():
 	return str(django.VERSION[0]) + '.' + str(django.VERSION[1]) + '.' + str(django.VERSION[2])
@@ -71,6 +72,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	emails = request.user.has_perm('tracker.view_emails')
 	showtime = request.user.has_perm('tracker.show_rendertime')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
+	context = RequestContext(request)
 	profile = None
 	if request.user.is_authenticated():
 		try:
@@ -102,11 +104,9 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 			dict.setdefault('usernameform', UsernameForm())
 			return render(request, 'tracker/username.html', dictionary=dict)
 		return render(request, template, dictionary=dict, status=status)
-	except TemplateSyntaxError, e:
-		return HttpResponse('Template Syntax Error:\n\n' + unicode(e), mimetype='text/plain', status=500)
 	except Exception, e:
 		if request.user.is_staff:
-			return HttpResponse(unicode(type(e)) + ' ' + unicode(e), mimetype='text/plain', status=500)
+			return HttpResponse(unicode(type(e)) + '\n\n' + unicode(e), mimetype='text/plain', status=500)
 		raise e
 	
 def dbindex(request):
