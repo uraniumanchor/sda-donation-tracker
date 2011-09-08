@@ -159,7 +159,7 @@ class SpeedRun(models.Model):
 		
 class UserProfile(models.Model):
 	user = models.ForeignKey(User, unique=True)
-	templateprepend = models.CharField('Template Prepend', max_length=64,blank=True)
+	prepend = models.CharField('Template Prepend', max_length=64,blank=True)
 	class Meta:
 		verbose_name = 'User Profile'
 	def __unicode__(self):

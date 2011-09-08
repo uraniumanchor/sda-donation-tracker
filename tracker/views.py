@@ -88,13 +88,14 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		'djangoversion' : dv(),
 		'pythonversion' : pv(),
 		'user' : request.user,
+		'profile' : profile,
 		'next' : request.REQUEST.get('next', request.path),
 		'starttime' : starttime,
 		'authform' : authform })
 	if request.user.is_authenticated and request.user.username[:10]=='openiduser':
 		dict.setdefault('usernameform', UsernameForm())
 		return render(request, 'tracker/username.html', dictionary=dict)
-	return render(request, profile.templateprepend + template, dictionary=dict, status=status)
+	return render(request, profile.prepend + template, dictionary=dict, status=status)
 	
 def dbindex(request):
 	dbs = settings.DATABASES.copy()
