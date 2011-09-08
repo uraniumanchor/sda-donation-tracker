@@ -69,6 +69,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	database = checkdb(db)
 	usernames = request.user.has_perm('tracker.view_usernames')
 	emails = request.user.has_perm('tracker.view_emails')
+	showtime = request.user.has_perm('tracker.show_rendertime')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
 	profile = None
 	if request.user.is_authenticated():

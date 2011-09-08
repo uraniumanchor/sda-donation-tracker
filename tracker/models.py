@@ -162,6 +162,9 @@ class UserProfile(models.Model):
 	prepend = models.CharField('Template Prepend', max_length=64,blank=True)
 	class Meta:
 		verbose_name = 'User Profile'
+		permissions = (
+			('show_rendertime', 'Can view page render times'),
+		)
 	def __unicode__(self):
 		return unicode(self.user)
 	
