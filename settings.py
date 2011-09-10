@@ -181,9 +181,11 @@ LOGGING = {
 }
 
 CACHES = {
-	'default': {
-		'BACKEND' : 'django.core.cache.backends.db.DatabaseCache',
-		'LOCATION' : 'donation_cache_table',
+	'default' : {
+		'BACKEND' : 'django.core.cache.backends.filebased.FileBasedCache',
+		'LOCATION': os.getenv('HOME') + '/django/cache',
+		#'BACKEND' : 'django.core.cache.backends.db.DatabaseCache',
+		#'LOCATION' : 'donation_cache_table',
 		'OPTIONS' : {
 			'MAX_ENTRIES': 1000
 		}

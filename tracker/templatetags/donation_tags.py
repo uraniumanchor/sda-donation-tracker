@@ -107,7 +107,6 @@ def do_email(parser, token):
 		if '.' not in surround:
 			raise template.TemplateSyntaxError("%s tag's third argument should have a '.' separator dot in" % token.contents.split()[0])		
 		surround = surround[1:-1]
-	print show
 	if type(show) != type(True):
 		show = parser.compile_filter(show)
 	return EmailNode(parser.compile_filter(email), show, surround)
@@ -137,7 +136,6 @@ class EmailNode(template.Node):
 				return ''
 		except (template.VariableDoesNotExist, TypeError), e:
 			return ''
-		#return <td><a href="mailto:{{ bid.donation__donorId__email }}">{{ bid.donation__donorId__email }}</a></td>{% endif %}
 
 @register.filter("forumfilter")
 def forumfilter(value,autoescape=None):

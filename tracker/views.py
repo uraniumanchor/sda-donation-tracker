@@ -223,7 +223,8 @@ def donorindex(request,db='default'):
 		database = checkdb(db)
 		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(Sum('donation__amount'), Count('donation__amount'), Max('donation__amount'), Avg('donation__amount'))
 		donors = fixorder(donors, orderdict, sort, order)
-		return tracker_response(request, db, 'tracker/donorindex.html', { 'donors' : donors })
+		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Count('amount'))
+		return tracker_response(request, db, 'tracker/donorindex.html', { 'donors' : donors, 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
@@ -254,6 +255,8 @@ def donationindex(request,db='default'):
 		database = checkdb(db)
 		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('donationId', 'domain', 'timeReceived', 'amount', 'comment','donorId','donorId__lastName','donorId__firstName','donorId__email')
 		donations = fixorder(donations, orderdict, sort, order)
+		if not request.user.has_perm('donations.view_full_list') or 'recent' in request.GET:
+			donations = donations[:50]
 		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
 		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations, 'agg' : agg })
 	except ConnectionDoesNotExist:
