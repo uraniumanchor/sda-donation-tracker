@@ -79,7 +79,7 @@ class NameNode(template.Node):
 			first_name = self.first_name.resolve(context)
 			last_name = self.last_name.resolve(context)
 			if not show:
-				last_name = last_name[0] + u'...'
+				last_name = last_name[:1] + u'...'
 			return last_name + u', ' + first_name
 		except (template.VariableDoesNotExist, TypeError), e:
 			return ''
