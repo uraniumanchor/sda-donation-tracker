@@ -257,7 +257,7 @@ def donationindex(request,db='default'):
 		donations = fixorder(donations, orderdict, sort, order)
 		fulllist = request.user.has_perm('donations.view_full_list') and 'recent' not in request.GET
 		if not fulllist:
-			donations = donations[:50]
+			donations = donations#[:50]
 		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
 		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations, 'agg' : agg, 'fulllist' : fulllist, 'sort' : sort, 'order' : order })
 	except ConnectionDoesNotExist:
