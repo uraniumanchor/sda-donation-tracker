@@ -84,7 +84,7 @@ class Donation(models.Model):
 	class Meta:
 		db_table = 'Donation'
 		permissions = (
-			('view_full_list', 'Can view full donation list')
+			('view_full_list', 'Can view full donation list'),
 		)
 		get_latest_by = 'timeReceived'
 		ordering = [ '-timeReceived' ]
