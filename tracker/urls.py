@@ -16,6 +16,7 @@ urlpatterns = patterns('tracker.views',
 	url(r'^(?P<db>(\w+/|))prizes/$', 'prizeindex'),
 	url(r'^dbs/$', 'dbindex'),
 	url(r'^setusername/$', 'setusername'),
+	url(r'^i18n/', include('django.conf.urls.i18n')),
 	url(r'^(?P<db>(\w+/|))$', 'index'),
 	url(r'^$', 'index'),
 )

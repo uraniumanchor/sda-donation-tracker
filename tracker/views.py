@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse,HttpResponseRedirect
 from django.template import RequestContext
 from django.template.base import TemplateSyntaxError
+from django.utils import translation
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django import template
@@ -68,11 +69,14 @@ def logout(request):
 def tracker_response(request, db=None, template='tracker/index.html', dict={}, status=200):
 	starttime = datetime.datetime.now()
 	database = checkdb(db)
-	usernames = request.user.has_perm('tracker.view_usernames')
-	emails = request.user.has_perm('tracker.view_emails')
+	usernames = request.user.has_perm('tracker.view_usernames') and 'nonames' not in request.GET
+	emails = request.user.has_perm('tracker.view_emails') and 'noemails' not in request.GET
 	showtime = request.user.has_perm('tracker.show_rendertime')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
 	context = RequestContext(request)
+	language = translation.get_language_from_request(request)
+	translation.activate(language)
+	request.LANGUAGE_CODE = translation.get_language()
 	profile = None
 	if request.user.is_authenticated():
 		try:
@@ -105,7 +109,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 			return render(request, 'tracker/username.html', dictionary=dict)
 		return render(request, template, dictionary=dict, status=status)
 	except Exception, e:
-		if request.user.is_staff:
+		if request.user.is_staff and not settings.DEBUG:
 			return HttpResponse(unicode(type(e)) + '\n\n' + unicode(e), mimetype='text/plain', status=500)
 		raise e
 	

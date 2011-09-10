@@ -135,13 +135,14 @@ class Donor(models.Model):
 		
 class Prize(models.Model):
 	prizeId = models.IntegerField(primary_key=True,editable=False)
+	sortKey = models.IntegerField(db_index=True)
 	name = models.CharField(max_length=64,unique=True)
 	image = models.URLField(max_length=1024,db_column='imageURL',null=True,blank=True)
-	description = models.TextField(max_length=1024)
+	description = models.TextField(max_length=1024,null=True,blank=True)
 	donor = models.ForeignKey('Donor',db_column='donorId')
 	class Meta:
 		db_table = 'Prize'
-		ordering = [ 'name' ]
+		ordering = [ 'sortKey', 'name' ]
 	def __unicode__(self):
 		return unicode(self.name)
 		

@@ -2,6 +2,7 @@
 *.pyc
 *.swp
 .debug
+.local
 sgdq_donations.sql
 uranium_*
 paste
