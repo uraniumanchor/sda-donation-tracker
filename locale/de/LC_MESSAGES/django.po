@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-09 23:25-0600\n"
+"POT-Creation-Date: 2011-09-12 14:24-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,23 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: settings.py:40
+#: settings.py:43
 msgid "German"
 msgstr ""
 
-#: settings.py:41
+#: settings.py:44
 msgid "English"
 msgstr ""
 
-#: settings.py:42
+#: settings.py:45
 msgid "Japanese"
 msgstr ""
 
-#: settings.py:43
+#: settings.py:46
 msgid "Dutch"
 msgstr ""
 
-#: settings.py:44
+#: settings.py:47
 msgid "Polish"
 msgstr ""
 
@@ -102,16 +102,16 @@ msgstr ""
 #: templates/tracker/challenge.html:11 templates/tracker/challengeindex.html:9
 #: templates/tracker/choice.html:11 templates/tracker/choiceindex.html:9
 #: templates/tracker/choiceoption.html:12
-#: templates/tracker/donationindex.html:10
-#: templates/tracker/donorindex.html:16
+#: templates/tracker/donationindex.html:11
+#: templates/tracker/donorindex.html:17
 msgid "Total"
 msgstr ""
 
 #: templates/tracker/challenge.html:14 templates/tracker/choice.html:27
 #: templates/tracker/choiceoption.html:16 templates/tracker/donation.html:9
 #: templates/tracker/donation.html.py:29
-#: templates/tracker/donationindex.html:15 templates/tracker/donor.html:9
-#: templates/tracker/donorindex.html:13 templates/tracker/game.html:17
+#: templates/tracker/donationindex.html:16 templates/tracker/donor.html:9
+#: templates/tracker/donorindex.html:14 templates/tracker/game.html:17
 #: templates/tracker/game.html.py:36 templates/tracker/gameindex.html:12
 #: templates/tracker/prizeindex.html:13
 msgid "Name"
@@ -119,14 +119,14 @@ msgstr ""
 
 #: templates/tracker/challenge.html:14 templates/tracker/choice.html:28
 #: templates/tracker/choiceoption.html:17
-#: templates/tracker/donationindex.html:16 templates/tracker/donor.html:10
-#: templates/tracker/donorindex.html:14
+#: templates/tracker/donationindex.html:17 templates/tracker/donor.html:10
+#: templates/tracker/donorindex.html:15
 msgid "Email"
 msgstr ""
 
 #: templates/tracker/challenge.html:14 templates/tracker/choice.html:29
 #: templates/tracker/choiceoption.html:18 templates/tracker/donation.html:11
-#: templates/tracker/donationindex.html:17 templates/tracker/donor.html:16
+#: templates/tracker/donationindex.html:18 templates/tracker/donor.html:16
 msgid "Time Received"
 msgstr ""
 
@@ -136,7 +136,7 @@ msgstr ""
 #: templates/tracker/choiceindex.html:12
 #: templates/tracker/choiceoption.html:19 templates/tracker/donation.html:12
 #: templates/tracker/donation.html.py:31 templates/tracker/donation.html:52
-#: templates/tracker/donationindex.html:18 templates/tracker/donor.html:16
+#: templates/tracker/donationindex.html:19 templates/tracker/donor.html:16
 #: templates/tracker/game.html:19 templates/tracker/game.html.py:38
 msgid "Amount"
 msgstr ""
@@ -151,8 +151,9 @@ msgid "Challenge Index"
 msgstr ""
 
 #: templates/tracker/challengeindex.html:9
-#: templates/tracker/choiceindex.html:9 templates/tracker/donationindex.html:9
-#: templates/tracker/donorindex.html:9 templates/tracker/gameindex.html:9
+#: templates/tracker/choiceindex.html:9
+#: templates/tracker/donationindex.html:10
+#: templates/tracker/donorindex.html:10 templates/tracker/gameindex.html:9
 #: templates/tracker/prizeindex.html:9
 msgid "Event"
 msgstr ""
@@ -206,7 +207,7 @@ msgstr ""
 msgid "Donation Detail"
 msgstr ""
 
-#: templates/tracker/donation.html:16 templates/tracker/donationindex.html:20
+#: templates/tracker/donation.html:16 templates/tracker/donationindex.html:21
 #: templates/tracker/donor.html:16
 msgid "Comment"
 msgstr ""
@@ -227,25 +228,25 @@ msgstr ""
 msgid "Back to Donation Index"
 msgstr ""
 
-#: templates/tracker/donationindex.html:5
-#: templates/tracker/donationindex.html:10
+#: templates/tracker/donationindex.html:6
+#: templates/tracker/donationindex.html:11
 msgid "Donation Index"
 msgstr ""
 
-#: templates/tracker/donationindex.html:11 templates/tracker/donor.html:13
+#: templates/tracker/donationindex.html:12 templates/tracker/donor.html:13
 #: templates/tracker/index.html:13
 msgid "Max/Avg Donation"
 msgstr ""
 
-#: templates/tracker/donationindex.html:19
+#: templates/tracker/donationindex.html:20
 msgid "Source"
 msgstr ""
 
-#: templates/tracker/donationindex.html:31 templates/tracker/donor.html:21
+#: templates/tracker/donationindex.html:33 templates/tracker/donor.html:21
 msgid "Yes"
 msgstr ""
 
-#: templates/tracker/donationindex.html:31 templates/tracker/donor.html:21
+#: templates/tracker/donationindex.html:33 templates/tracker/donor.html:21
 msgid "No"
 msgstr ""
 
@@ -253,7 +254,7 @@ msgstr ""
 msgid "Donor Detail"
 msgstr ""
 
-#: templates/tracker/donor.html:11 templates/tracker/donorindex.html:15
+#: templates/tracker/donor.html:11 templates/tracker/donorindex.html:16
 msgid "Alias"
 msgstr ""
 
@@ -265,19 +266,19 @@ msgstr ""
 msgid "Back to Donor Index"
 msgstr ""
 
-#: templates/tracker/donorindex.html:5 templates/tracker/donorindex.html:9
+#: templates/tracker/donorindex.html:6 templates/tracker/donorindex.html:10
 msgid "Donor Index"
 msgstr ""
 
-#: templates/tracker/donorindex.html:17
+#: templates/tracker/donorindex.html:18
 msgid "Max"
 msgstr ""
 
-#: templates/tracker/donorindex.html:17
+#: templates/tracker/donorindex.html:18
 msgid "Avg"
 msgstr ""
 
-#: templates/tracker/donorindex.html:17
+#: templates/tracker/donorindex.html:18
 msgid "Donation"
 msgstr ""
 
