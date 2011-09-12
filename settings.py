@@ -1,7 +1,7 @@
 # Django settings for donations project.
 import os
 try:
-    from private import DATABASES,ADMINS,INTERNAL_IPS
+    from private import DATABASES,ADMINS,INTERNAL_IPS,SECRET_KEY
 except ImportError:
     DATABASES = { 
         'default' : {
@@ -16,6 +16,9 @@ except ImportError:
     }
     ADMINS = (
     )
+    # Just a fallback in case private settings won't load
+    SECRET_KEY = '*7_6b#mk0$sc75&obsxuidgg@vgqbecd0r2_sun!e#^*pdp19q'
+
 
 DEBUG = os.access('.debug', os.F_OK)
 TEMPLATE_DEBUG = DEBUG
@@ -92,9 +95,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '*7_6b#mk0$sc75&obsxuidgg@vgqbecd0r2_sun!e#^*pdp19q'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -182,10 +182,10 @@ LOGGING = {
 
 CACHES = {
 	'default' : {
-		'BACKEND' : 'django.core.cache.backends.filebased.FileBasedCache',
-		'LOCATION': os.getenv('HOME') + '/django/cache',
-		#'BACKEND' : 'django.core.cache.backends.db.DatabaseCache',
-		#'LOCATION' : 'donation_cache_table',
+		#'BACKEND' : 'django.core.cache.backends.filebased.FileBasedCache',
+		#'LOCATION': os.getenv('HOME') + '/django/cache',
+		'BACKEND' : 'django.core.cache.backends.db.DatabaseCache',
+		'LOCATION' : 'donation_cache_table',
 		'OPTIONS' : {
 			'MAX_ENTRIES': 1000
 		}
