@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-13 14:57-0600\n"
-"PO-Revision-Date: 2011-09-13 14:55-0700\n"
+"POT-Creation-Date: 2011-09-13 17:24-0600\n"
+"PO-Revision-Date: 2011-09-13 17:48-0700\n"
 "Last-Translator: \n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -20,8 +20,7 @@ msgstr ""
 #: templates/base.html:21
 #, python-format
 msgid "Running on Django %(djangoversion)s with Python %(pythonversion)s"
-msgstr ""
-"Pagina maakt gebruik van Django %(djangoversion)s en Python %(pythonversion)s"
+msgstr "Pagina maakt gebruik van Django %(djangoversion)s en Python %(pythonversion)s"
 
 #: templates/base.html:21
 msgid "Python code by UraniumAnchor"
@@ -31,7 +30,8 @@ msgstr "Geprogrammeerd in Python door UraniumAnchor"
 msgid "Translated By"
 msgstr "Vertaald naar het Nederlands door Adam Kuczynski"
 
-#: templates/openid/login.html:17 templates/tracker/username.html:11
+#: templates/openid/login.html:17
+#: templates/tracker/username.html:11
 msgid "Please correct errors below"
 msgstr "Verbeter alstublief de onderstaande fouten"
 
@@ -67,10 +67,14 @@ msgstr "Geselecteerd object staat niet in de database"
 msgid "Challenge Detail"
 msgstr "Gegevens over uitdaging"
 
-#: templates/tracker/challenge.html:9 templates/tracker/challengeindex.html:12
-#: templates/tracker/choice.html:9 templates/tracker/choiceindex.html:12
-#: templates/tracker/choiceoption.html:9 templates/tracker/donation.html:28
-#: templates/tracker/donation.html.py:49 templates/tracker/game.html:9
+#: templates/tracker/challenge.html:9
+#: templates/tracker/challengeindex.html:12
+#: templates/tracker/choice.html:9
+#: templates/tracker/choiceindex.html:12
+#: templates/tracker/choiceoption.html:9
+#: templates/tracker/donation.html:28
+#: templates/tracker/donation.html.py:49
+#: templates/tracker/game.html:9
 msgid "Game"
 msgstr "Spel"
 
@@ -79,45 +83,63 @@ msgstr "Spel"
 msgid "Challenge"
 msgstr "Uitdaging"
 
-#: templates/tracker/challenge.html:11 templates/tracker/challengeindex.html:9
-#: templates/tracker/choice.html:11 templates/tracker/choiceindex.html:9
+#: templates/tracker/challenge.html:11
+#: templates/tracker/challengeindex.html:9
+#: templates/tracker/choice.html:11
+#: templates/tracker/choiceindex.html:9
 #: templates/tracker/choiceoption.html:12
 #: templates/tracker/donationindex.html:11
 #: templates/tracker/donorindex.html:17
 msgid "Total"
 msgstr "Totaal"
 
-#: templates/tracker/challenge.html:14 templates/tracker/choice.html:27
-#: templates/tracker/choiceoption.html:16 templates/tracker/donation.html:9
+#: templates/tracker/challenge.html:14
+#: templates/tracker/choice.html:27
+#: templates/tracker/choiceoption.html:16
+#: templates/tracker/donation.html:9
 #: templates/tracker/donation.html.py:29
-#: templates/tracker/donationindex.html:16 templates/tracker/donor.html:9
-#: templates/tracker/donorindex.html:14 templates/tracker/game.html:17
-#: templates/tracker/game.html.py:36 templates/tracker/gameindex.html:12
+#: templates/tracker/donationindex.html:16
+#: templates/tracker/donor.html:9
+#: templates/tracker/donorindex.html:14
+#: templates/tracker/game.html:17
+#: templates/tracker/game.html.py:36
+#: templates/tracker/gameindex.html:12
 #: templates/tracker/prizeindex.html:13
 msgid "Name"
 msgstr "Naam"
 
-#: templates/tracker/challenge.html:14 templates/tracker/choice.html:28
+#: templates/tracker/challenge.html:14
+#: templates/tracker/choice.html:28
 #: templates/tracker/choiceoption.html:17
-#: templates/tracker/donationindex.html:17 templates/tracker/donor.html:10
+#: templates/tracker/donationindex.html:17
+#: templates/tracker/donor.html:10
 #: templates/tracker/donorindex.html:15
 msgid "Email"
 msgstr "Email"
 
-#: templates/tracker/challenge.html:14 templates/tracker/choice.html:29
-#: templates/tracker/choiceoption.html:18 templates/tracker/donation.html:11
-#: templates/tracker/donationindex.html:18 templates/tracker/donor.html:16
+#: templates/tracker/challenge.html:14
+#: templates/tracker/choice.html:29
+#: templates/tracker/choiceoption.html:18
+#: templates/tracker/donation.html:11
+#: templates/tracker/donationindex.html:18
+#: templates/tracker/donor.html:16
 msgid "Time Received"
 msgstr "Tijd van ontvangst"
 
 #: templates/tracker/challenge.html:14
-#: templates/tracker/challengeindex.html:12 templates/tracker/choice.html:15
-#: templates/tracker/choice.html.py:19 templates/tracker/choice.html:30
+#: templates/tracker/challengeindex.html:12
+#: templates/tracker/choice.html:15
+#: templates/tracker/choice.html.py:19
+#: templates/tracker/choice.html:30
 #: templates/tracker/choiceindex.html:12
-#: templates/tracker/choiceoption.html:19 templates/tracker/donation.html:12
-#: templates/tracker/donation.html.py:31 templates/tracker/donation.html:52
-#: templates/tracker/donationindex.html:19 templates/tracker/donor.html:16
-#: templates/tracker/game.html:19 templates/tracker/game.html.py:38
+#: templates/tracker/choiceoption.html:19
+#: templates/tracker/donation.html:12
+#: templates/tracker/donation.html.py:31
+#: templates/tracker/donation.html:52
+#: templates/tracker/donationindex.html:19
+#: templates/tracker/donor.html:16
+#: templates/tracker/game.html:19
+#: templates/tracker/game.html.py:38
 msgid "Amount"
 msgstr "Gedoneerd bedrag"
 
@@ -133,12 +155,15 @@ msgstr "Lijst van uitdagingen"
 #: templates/tracker/challengeindex.html:9
 #: templates/tracker/choiceindex.html:9
 #: templates/tracker/donationindex.html:10
-#: templates/tracker/donorindex.html:10 templates/tracker/gameindex.html:9
-#: templates/tracker/index.html:11 templates/tracker/prizeindex.html:9
+#: templates/tracker/donorindex.html:10
+#: templates/tracker/gameindex.html:9
+#: templates/tracker/index.html:11
+#: templates/tracker/prizeindex.html:9
 msgid "Event"
 msgstr "Evenement"
 
-#: templates/tracker/challengeindex.html:12 templates/tracker/donation.html:30
+#: templates/tracker/challengeindex.html:12
+#: templates/tracker/donation.html:30
 #: templates/tracker/game.html:18
 msgid "Goal"
 msgstr "Doel"
@@ -147,23 +172,29 @@ msgstr "Doel"
 msgid "Choice Detail"
 msgstr "Gegevens over keuze"
 
-#: templates/tracker/choice.html:10 templates/tracker/choiceindex.html:12
-#: templates/tracker/choiceoption.html:10 templates/tracker/donation.html:50
+#: templates/tracker/choice.html:10
+#: templates/tracker/choiceindex.html:12
+#: templates/tracker/choiceoption.html:10
+#: templates/tracker/donation.html:50
 msgid "Choice"
 msgstr "Mogelijke keuzes"
 
-#: templates/tracker/choice.html:15 templates/tracker/choice.html.py:19
+#: templates/tracker/choice.html:15
+#: templates/tracker/choice.html.py:19
 #: templates/tracker/choiceindex.html:12
-#: templates/tracker/choiceoption.html:11 templates/tracker/donation.html:51
+#: templates/tracker/choiceoption.html:11
+#: templates/tracker/donation.html:51
 #: templates/tracker/game.html:37
 msgid "Option"
 msgstr "Gekozen optie"
 
-#: templates/tracker/choice.html:59 templates/tracker/choiceoption.html:48
+#: templates/tracker/choice.html:59
+#: templates/tracker/choiceoption.html:48
 msgid "Back to Choice Index"
 msgstr "Terug naar index van keuzes"
 
-#: templates/tracker/choiceindex.html:5 templates/tracker/choiceindex.html:9
+#: templates/tracker/choiceindex.html:5
+#: templates/tracker/choiceindex.html:9
 msgid "Choice Index"
 msgstr "Index van keuzes"
 
@@ -179,15 +210,12 @@ msgstr "Verberg commentaar"
 msgid "Show Comments"
 msgstr "Toon commentaar"
 
-#: templates/tracker/dbindex.html:4 templates/tracker/dbindex.html.py:8
-msgid "Database Index"
-msgstr "Database index"
-
 #: templates/tracker/donation.html:5
 msgid "Donation Detail"
 msgstr "Donatie gegevens"
 
-#: templates/tracker/donation.html:16 templates/tracker/donationindex.html:21
+#: templates/tracker/donation.html:16
+#: templates/tracker/donationindex.html:21
 #: templates/tracker/donor.html:16
 msgid "Comment"
 msgstr "Commentaar"
@@ -213,7 +241,8 @@ msgstr "Terug naar lijst van schenkingen"
 msgid "Donation Index"
 msgstr "Lijst van schenkingen"
 
-#: templates/tracker/donationindex.html:12 templates/tracker/donor.html:13
+#: templates/tracker/donationindex.html:12
+#: templates/tracker/donor.html:13
 #: templates/tracker/index.html:13
 msgid "Max/Avg Donation"
 msgstr "Hoogste/Gemmiddelde schenking"
@@ -222,11 +251,13 @@ msgstr "Hoogste/Gemmiddelde schenking"
 msgid "Source"
 msgstr "Oorsprong"
 
-#: templates/tracker/donationindex.html:33 templates/tracker/donor.html:21
+#: templates/tracker/donationindex.html:33
+#: templates/tracker/donor.html:21
 msgid "Yes"
 msgstr "Ja"
 
-#: templates/tracker/donationindex.html:33 templates/tracker/donor.html:21
+#: templates/tracker/donationindex.html:33
+#: templates/tracker/donor.html:21
 msgid "No"
 msgstr "Nee"
 
@@ -234,7 +265,8 @@ msgstr "Nee"
 msgid "Donor Detail"
 msgstr "Gegevens over donateur"
 
-#: templates/tracker/donor.html:11 templates/tracker/donorindex.html:16
+#: templates/tracker/donor.html:11
+#: templates/tracker/donorindex.html:16
 msgid "Alias"
 msgstr "Alias"
 
@@ -246,7 +278,8 @@ msgstr "Totaal geschonken bedrag"
 msgid "Back to Donor Index"
 msgstr "Terug naar lijst van donateurs"
 
-#: templates/tracker/donorindex.html:6 templates/tracker/donorindex.html:10
+#: templates/tracker/donorindex.html:6
+#: templates/tracker/donorindex.html:10
 msgid "Donor Index"
 msgstr "Lijst van donateurs"
 
@@ -262,11 +295,17 @@ msgstr "Gemiddelde"
 msgid "Donation"
 msgstr "Schenking"
 
+#: templates/tracker/eventlist.html:4
+#: templates/tracker/eventlist.html.py:8
+msgid "Event List"
+msgstr "Lijst van evenementen"
+
 #: templates/tracker/game.html:5
 msgid "Game Detail"
 msgstr "Spel gegevens"
 
-#: templates/tracker/game.html:9 templates/tracker/gameindex.html:12
+#: templates/tracker/game.html:9
+#: templates/tracker/gameindex.html:12
 #: templates/tracker/prizeindex.html:14
 msgid "Description"
 msgstr "Beschrijving"
@@ -283,7 +322,8 @@ msgstr "Keuzes"
 msgid "Back to Game Index"
 msgstr "Terug naar lijst van spellen"
 
-#: templates/tracker/gameindex.html:5 templates/tracker/gameindex.html.py:9
+#: templates/tracker/gameindex.html:5
+#: templates/tracker/gameindex.html.py:9
 msgid "Game Index"
 msgstr "Lijst van spellen"
 
@@ -319,12 +359,13 @@ msgstr "Bekijk de lijst van donateurs"
 msgid "View Donations"
 msgstr "Kijk wie heeft gedoneerd"
 
-#: templates/tracker/index.html:23 templates/tracker/navfooter.html:6
+#: templates/tracker/index.html:23
+#: templates/tracker/navfooter.html:6
 msgid "Back to Main Index"
 msgstr "Terug naar het hoofdmenu"
 
 #: templates/tracker/index.html:25
-msgid "Switch Databases"
+msgid "Select another Event"
 msgstr "Kies een ander evenement"
 
 #: templates/tracker/index.html:35
@@ -345,8 +386,7 @@ msgstr "Bevestig"
 
 #: templates/tracker/login.html:4
 msgid "Your username and password didn't match. Please try again."
-msgstr ""
-"Uw gebruikersnaam en wachtwoord komen niet overeen. Probeert U het nog eens."
+msgstr "Uw gebruikersnaam en wachtwoord komen niet overeen. Probeert U het nog eens."
 
 #: templates/tracker/login.html:6
 msgid "Log In with a Google Account"
@@ -361,7 +401,8 @@ msgstr "Log in"
 msgid "Back to %(dbname)s Index"
 msgstr "Terug naar de %(dbname)s index"
 
-#: templates/tracker/prizeindex.html:5 templates/tracker/prizeindex.html:9
+#: templates/tracker/prizeindex.html:5
+#: templates/tracker/prizeindex.html:9
 msgid "Prize Index"
 msgstr "Index van prijzen"
 
@@ -399,9 +440,7 @@ msgstr "Bevestig"
 
 #: tracker/forms.py:15
 msgid "Usernames can only contain letters, numbers, and the underscore"
-msgstr ""
-"Gebruikersnaam mag alleen gebruik maken van letters, cijfers en het "
-"onderstreepje"
+msgstr "Gebruikersnaam mag alleen gebruik maken van letters, cijfers en het onderstreepje"
 
 #: tracker/forms.py:17
 msgid "Username may not start with 'openiduser'"
@@ -410,6 +449,12 @@ msgstr "Gebruikersnaam mag niet beginnen met 'openiduser'"
 #: tracker/forms.py:19
 msgid "Username already in use"
 msgstr "Gebruikersnaam is helaas reeds in gebruik"
+
+#~ msgid "Database Index"
+#~ msgstr "Database index"
+
+#~ msgid "Switch Databases"
+#~ msgstr "Kies een ander evenement"
 
 #~ msgid "Event:"
 #~ msgstr "Evenement:"

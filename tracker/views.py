@@ -113,10 +113,10 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 			return HttpResponse(unicode(type(e)) + '\n\n' + unicode(e), mimetype='text/plain', status=500)
 		raise e
 	
-def dbindex(request):
+def eventlist(request):
 	dbs = settings.DATABASES.copy()
 	del dbs['default']
-	return tracker_response(request, None, 'tracker/dbindex.html', { 'databases' : dbs })
+	return tracker_response(request, None, 'tracker/eventlist.html', { 'databases' : dbs })
 
 def index(request,db=''):
 	try:
