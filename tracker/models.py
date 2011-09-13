@@ -76,8 +76,9 @@ class Donation(models.Model):
 	donorId = models.ForeignKey('Donor',db_column='donorId')
 	domain = models.ForeignKey('DonationDomain',db_column='domain')
 	domainId = models.CharField(max_length=160,unique=True)
-	bidState = models.ForeignKey('DonationBidState',db_column='bidState')
-	readState = models.ForeignKey('DonationReadState',db_column='readState')
+	bidState = models.ForeignKey('DonationBidState',db_column='bidState',default='PENDING')
+	readState = models.ForeignKey('DonationReadState',db_column='readState',default='PENDING')
+	commentState = models.ForeignKey('DonationCommentState',db_column='commentState',default='PENDING')
 	amount = models.DecimalField(decimal_places=2,max_digits=20)
 	timeReceived = models.DateTimeField()
 	comment = models.TextField(max_length=4096,null=True,blank=True)
@@ -98,6 +99,12 @@ class DonationBidState(models.Model):
 		verbose_name = 'Donation Bid State'
 	def __unicode__(self):
 		return self.donationBidStateId
+
+class DonationCommentState(models.Model):
+	donationCommentStateId = models.CharField(primary_key=True,max_length=16,unique=True)
+	class Meta:
+		db_table = 'DonationCommentState'
+		verbose_name = 'Donation Comment State'
 		
 class DonationDomain(models.Model):
 	donationDomainId = models.CharField(primary_key=True,max_length=16,unique=True)

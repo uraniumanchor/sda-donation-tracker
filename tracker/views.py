@@ -171,9 +171,9 @@ def choice(request,id,db='default'):
 	try:
 		database = checkdb(db)
 		choice = Choice.objects.using(database).get(pk=id)
-		choicebids = ChoiceBid.objects.using(database).filter(optionId__choice__exact=id).values('optionId', 'donationId', 'donationId__donorId', 'donationId__donorId__lastName', 'donationId__donorId__firstName', 'donationId__donorId__email', 'donationId__timeReceived', 'donationId__comment', 'amount').order_by('-donationId__timeReceived')
-		options = ChoiceOption.objects.using(database).filter(choice__exact=id).annotate(Sum('choicebid__amount'), Count('choicebid__amount'))
-		agg = ChoiceBid.objects.using(database).filter(optionId__choice__exact=id).aggregate(Sum('amount'), Count('amount'))
+		choicebids = ChoiceBid.objects.using(database).filter(optionId__choice=id).values('optionId', 'donationId', 'donationId__donorId', 'donationId__donorId__lastName', 'donationId__donorId__firstName', 'donationId__donorId__email', 'donationId__timeReceived', 'donationId__comment', 'amount').order_by('-donationId__timeReceived')
+		options = ChoiceOption.objects.using(database).filter(choice=id).annotate(Sum('choicebid__amount'), Count('choicebid__amount'))
+		agg = ChoiceBid.objects.using(database).filter(optionId__choice=id).aggregate(Sum('amount'), Count('amount'))
 		comments = 'comments' in request.GET
 		return tracker_response(request, db, 'tracker/choice.html', { 'choice' : choice, 'choicebids' : choicebids, 'comments' : comments, 'options' : options, 'agg' : agg })
 	except ObjectDoesNotExist:
@@ -194,8 +194,8 @@ def choiceoption(request,id,db='default'):
 		order = int(request.GET.get('order', '-1'))
 		database = checkdb(db)
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
-		agg = ChoiceBid.objects.using(database).filter(optionId__exact=id).aggregate(Sum('amount'))
-		choicebids = ChoiceBid.objects.using(database).values('donationId', 'donationId__comment', 'donationId__donorId', 'donationId__donorId__firstName','donationId__donorId__lastName', 'donationId__donorId__email', 'amount', 'donationId__timeReceived').filter(optionId__exact=id)
+		agg = ChoiceBid.objects.using(database).filter(optionId=id).aggregate(Sum('amount'))
+		choicebids = ChoiceBid.objects.using(database).values('donationId', 'donationId__comment', 'donationId__donorId', 'donationId__donorId__firstName','donationId__donorId__lastName', 'donationId__donorId__email', 'amount', 'donationId__timeReceived').filter(optionId=id)
 		choicebids = fixorder(choicebids, orderdict, sort, order)
 		comments = 'comments' in request.GET
 		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'choicebids' : choicebids, 'comments' : comments, 'agg' : agg })
@@ -288,8 +288,8 @@ def game(request,id,db='default'):
 	try:
 		database = checkdb(db)
 		game = SpeedRun.objects.using(database).get(pk=id)
-		challenges = Challenge.objects.using(database).filter(speedRun__exact=id).annotate(Sum('challengebid__amount'), Count('challengebid'))
-		choices = Choice.objects.using(database).filter(speedRun__exact=game).values('choiceId', 'name', 'choiceoption', 'choiceoption__name',).annotate(Sum('choiceoption__choicebid__amount'), Count('choiceoption__choicebid')).order_by('name', '-choiceoption__choicebid__amount__sum')
+		challenges = Challenge.objects.using(database).filter(speedRun=id).annotate(Sum('challengebid__amount'), Count('challengebid'))
+		choices = Choice.objects.using(database).filter(speedRun=id).values('choiceId', 'name', 'choiceoption', 'choiceoption__name',).annotate(Sum('choiceoption__choicebid__amount'), Count('choiceoption__choicebid')).order_by('name', '-choiceoption__choicebid__amount__sum')
 		return tracker_response(request, db, 'tracker/game.html', { 'game' : game, 'challenges' : challenges, 'choices' : choices })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
