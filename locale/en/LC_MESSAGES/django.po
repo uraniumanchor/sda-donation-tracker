@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 15:20-0600\n"
+"POT-Creation-Date: 2011-09-13 14:57-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,8 +30,8 @@ msgstr ""
 msgid "Translated By"
 msgstr " "
 
-#: templates/openid/login.html:17
-msgid "Please correct errors below:"
+#: templates/openid/login.html:17 templates/tracker/username.html:11
+msgid "Please correct errors below"
 msgstr ""
 
 #: templates/openid/login.html:29
@@ -39,7 +39,7 @@ msgid "Sign In Using Your OpenID"
 msgstr ""
 
 #: templates/openid/login.html:31
-msgid "OpenID:"
+msgid "OpenID"
 msgstr ""
 
 #: templates/openid/login.html:35
@@ -133,7 +133,7 @@ msgstr ""
 #: templates/tracker/choiceindex.html:9
 #: templates/tracker/donationindex.html:10
 #: templates/tracker/donorindex.html:10 templates/tracker/gameindex.html:9
-#: templates/tracker/prizeindex.html:9
+#: templates/tracker/index.html:11 templates/tracker/prizeindex.html:9
 msgid "Event"
 msgstr ""
 
@@ -290,10 +290,6 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
-#: templates/tracker/index.html:11
-msgid "Event:"
-msgstr ""
-
 #: templates/tracker/index.html:12
 msgid "Donation Total"
 msgstr ""
@@ -389,10 +385,6 @@ msgstr ""
 
 #: templates/tracker/username.html:8
 msgid "Pick A Username For This Account"
-msgstr ""
-
-#: templates/tracker/username.html:11
-msgid "Please correct errors below"
 msgstr ""
 
 #: templates/tracker/username.html:25

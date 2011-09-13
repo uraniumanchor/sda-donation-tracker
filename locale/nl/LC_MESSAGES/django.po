@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 15:20-0600\n"
-"PO-Revision-Date: 2011-09-12 23:03+0100\n"
-"Last-Translator: Adam Kuczynski <adamkuczynski@gmail.com>\n"
+"POT-Creation-Date: 2011-09-13 14:57-0600\n"
+"PO-Revision-Date: 2011-09-13 14:55-0700\n"
+"Last-Translator: \n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -31,16 +31,16 @@ msgstr "Geprogrammeerd in Python door UraniumAnchor"
 msgid "Translated By"
 msgstr "Vertaald naar het Nederlands door Adam Kuczynski"
 
-#: templates/openid/login.html:17
-msgid "Please correct errors below:"
-msgstr "Verbeter alstublieft de onderstaande fouten:"
+#: templates/openid/login.html:17 templates/tracker/username.html:11
+msgid "Please correct errors below"
+msgstr "Verbeter alstublief de onderstaande fouten"
 
 #: templates/openid/login.html:29
 msgid "Sign In Using Your OpenID"
 msgstr "Log in me Uw OpenID"
 
 #: templates/openid/login.html:31
-msgid "OpenID:"
+msgid "OpenID"
 msgstr "OpenID:"
 
 #: templates/openid/login.html:35
@@ -134,7 +134,7 @@ msgstr "Lijst van uitdagingen"
 #: templates/tracker/choiceindex.html:9
 #: templates/tracker/donationindex.html:10
 #: templates/tracker/donorindex.html:10 templates/tracker/gameindex.html:9
-#: templates/tracker/prizeindex.html:9
+#: templates/tracker/index.html:11 templates/tracker/prizeindex.html:9
 msgid "Event"
 msgstr "Evenement"
 
@@ -291,10 +291,6 @@ msgstr "Lijst van spellen"
 msgid "Index"
 msgstr "Index"
 
-#: templates/tracker/index.html:11
-msgid "Event:"
-msgstr "Evenement:"
-
 #: templates/tracker/index.html:12
 msgid "Donation Total"
 msgstr "Totaal geschonken bedrag"
@@ -393,10 +389,6 @@ msgstr "Kies een gebruikersnaam"
 msgid "Pick A Username For This Account"
 msgstr "Kies een gebruikersnaam voor Uw account"
 
-#: templates/tracker/username.html:11
-msgid "Please correct errors below"
-msgstr "Verbeter alstublief de onderstaande fouten"
-
 #: templates/tracker/username.html:25
 msgid "Username"
 msgstr "Gebruikersnaam"
@@ -418,3 +410,9 @@ msgstr "Gebruikersnaam mag niet beginnen met 'openiduser'"
 #: tracker/forms.py:19
 msgid "Username already in use"
 msgstr "Gebruikersnaam is helaas reeds in gebruik"
+
+#~ msgid "Event:"
+#~ msgstr "Evenement:"
+
+#~ msgid "Please correct errors below:"
+#~ msgstr "Verbeter alstublieft de onderstaande fouten:"
