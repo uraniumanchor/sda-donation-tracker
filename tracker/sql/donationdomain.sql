@@ -1,2 +1,0 @@
-INSERT INTO DonationDomain VALUES('LOCAL');
-INSERT INTO DonationDomain VALUES('CHIPIN');

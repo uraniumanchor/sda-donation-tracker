@@ -1,3 +1,0 @@
-INSERT INTO DonationBidState VALUES ('PENDING');
-INSERT INTO DonationBidState VALUES ('PROCESSED');
-INSERT INTO DonationBidState VALUES ('FLAGGED');
