@@ -115,12 +115,12 @@ class Prize(models.Model):
 class SpeedRun(models.Model):
 	#id = models.IntegerField(primary_key=True,editable=False, db_column='id')
 	name = models.CharField(max_length=64,unique=True)
-	order = models.IntegerField(unique=True)
+	sortKey = models.IntegerField(unique=True)
 	description = models.TextField(max_length=1024)
 	class Meta:
 		db_table = 'SpeedRun'
 		verbose_name = 'Speed Run'
-		ordering = [ 'order' ]
+		ordering = [ 'sortKey' ]
 	def __unicode__(self):
 		return unicode(self.name)
 		
