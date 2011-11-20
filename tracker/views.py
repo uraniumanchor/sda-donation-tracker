@@ -37,10 +37,11 @@ def checkdb(db):
 	return database
 	
 def fixorder(queryset, orderdict, sort, order):
-	if len(orderdict[sort]) == 2:
-		queryset = queryset.order_by(orderdict[sort][0], orderdict[sort][1])
-	else:
-		queryset = queryset.order_by(orderdict[sort][0])
+	queryset = queryset.order_by(*orderdict[sort])
+	#if len(orderdict[sort]) == 2:
+	#	queryset = queryset.order_by(orderdict[sort][0], orderdict[sort][1])
+	#else:
+	#	queryset = queryset.order_by(orderdict[sort][0])
 	if order == -1:
 		queryset = queryset.reverse()
 	return queryset
@@ -72,6 +73,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	usernames = request.user.has_perm('tracker.view_usernames') and 'nonames' not in request.GET
 	emails = request.user.has_perm('tracker.view_emails') and 'noemails' not in request.GET
 	showtime = request.user.has_perm('tracker.show_rendertime')
+	fulllist = request.user.has_perm('donations.view_full_list')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
 	context = RequestContext(request)
 	language = translation.get_language_from_request(request)
@@ -149,7 +151,7 @@ def challenge(request,id,db):
 	try:
 		database = checkdb(db)
 		challenge = Challenge.objects.get(pk=id)
-		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__comment', 'donation__donor', 'donation__timeReceived', 'donation__donor__firstName', 'donation__donor__lastName', 'donation__donor__email').order_by('-donation__timeReceived')
+		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__timeReceived', 'donation__donor__firstName', 'donation__donor__lastName', 'donation__donor__email').order_by('-donation__timeReceived')
 		comments = 'comments' in request.GET
 		agg = ChallengeBid.objects.using(database).filter(challenge__exact=id).aggregate(Sum('amount'), Count('amount'))
 		return tracker_response(request, db, 'tracker/challenge.html', { 'challenge' : challenge, 'comments' : comments, 'bids' : bids, 'agg' : agg })
@@ -171,7 +173,7 @@ def choice(request,id,db='default'):
 	try:
 		database = checkdb(db)
 		choice = Choice.objects.using(database).get(pk=id)
-		choicebids = ChoiceBid.objects.using(database).filter(choiceOption__choice=id).values('choiceOption', 'donation', 'donation__donor', 'donation__donor__lastName', 'donation__donor__firstName', 'donation__donor__email', 'donation__timeReceived', 'donation__comment', 'amount').order_by('-donation__timeReceived')
+		choicebids = ChoiceBid.objects.using(database).filter(choiceOption__choice=id).values('choiceOption', 'donation', 'donation__donor', 'donation__donor__lastName', 'donation__donor__firstName', 'donation__donor__email', 'donation__timeReceived', 'donation__comment', 'donation__commentState', 'amount').order_by('-donation__timeReceived')
 		options = ChoiceOption.objects.using(database).filter(choice=id).annotate(Sum('choicebid__amount'), Count('choicebid__amount'))
 		agg = ChoiceBid.objects.using(database).filter(choiceOption__choice=id).aggregate(Sum('amount'), Count('amount'))
 		comments = 'comments' in request.GET
@@ -184,7 +186,7 @@ def choice(request,id,db='default'):
 def choiceoption(request,id,db='default'):
 	try:
 		orderdict = { 
-			'name'   : ('donation__donorId__lastName', 'donation__donorId__firstName'),
+			'name'   : ('donation__donor__lastName', 'donation__donor__firstName'),
 			'amount' : ('amount', ),
 			'time'   : ('donation__timeReceived', ),
 		}
@@ -195,10 +197,10 @@ def choiceoption(request,id,db='default'):
 		database = checkdb(db)
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
 		agg = ChoiceBid.objects.using(database).filter(choiceOption=id).aggregate(Sum('amount'))
-		choicebids = ChoiceBid.objects.using(database).values('donation', 'donation__comment', 'donation__donor', 'donation__donor__firstName','donation__donor__lastName', 'donation__donor__email', 'amount', 'donation__timeReceived').filter(choiceOption=id)
+		bids = ChoiceBid.objects.using(database).values('donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__donor__firstName','donation__donor__lastName', 'donation__donor__email', 'amount', 'donation__timeReceived').filter(choiceOption=id)
 		choicebids = fixorder(choicebids, orderdict, sort, order)
 		comments = 'comments' in request.GET
-		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'choicebids' : choicebids, 'comments' : comments, 'agg' : agg })
+		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'bids' : bids, 'comments' : comments, 'agg' : agg })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
@@ -244,7 +246,7 @@ def donor(request,id,db='default'):
 def donationindex(request,db='default'):
 	try:
 		orderdict = { 
-			'name'   : ('donorId__lastName', 'donorId__firstName'),
+			'name'   : ('donor__lastName', 'donor__firstName'),
 			'amount' : ('amount', ),
 			'time'   : ('timeReceived', ),
 		}

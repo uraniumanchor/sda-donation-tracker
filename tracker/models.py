@@ -79,7 +79,6 @@ class Donation(models.Model):
 		return unicode(self.donorId) + ' (' + unicode(self.amount) + ') (' + unicode(self.timeReceived) + ')'
 		
 class Donor(models.Model):
-	#donorId = models.IntegerField(primary_key=True,editable=False, db_column='id')
 	email = models.EmailField(max_length=128,unique=True)
 	alias = models.CharField(max_length=32,unique=True,null=True,blank=True)
 	firstName = models.CharField(max_length=32)
@@ -100,7 +99,6 @@ class Donor(models.Model):
 		return ret
 		
 class Prize(models.Model):
-	#id = models.IntegerField(primary_key=True,editable=False, db_column='id')
 	sortKey = models.IntegerField(db_index=True)
 	name = models.CharField(max_length=64,unique=True)
 	image = models.URLField(max_length=1024,db_column='imageURL',null=True,blank=True)
@@ -113,7 +111,6 @@ class Prize(models.Model):
 		return unicode(self.name)
 		
 class SpeedRun(models.Model):
-	#id = models.IntegerField(primary_key=True,editable=False, db_column='id')
 	name = models.CharField(max_length=64,unique=True)
 	sortKey = models.IntegerField(unique=True)
 	description = models.TextField(max_length=1024)
