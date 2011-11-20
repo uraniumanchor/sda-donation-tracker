@@ -124,7 +124,14 @@ def index(request,db=''):
 	try:
 		database = checkdb(db)
 		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
-		return tracker_response(request, db, 'tracker/index.html', { 'agg' : agg })
+		count = { 
+			'games' : SpeedRun.objects.using(database).count(), 
+			'prizes' : Prize.objects.using(database).count(),
+			'challenges' : Challenge.objects.using(database).count(),
+			'choices' : Choice.objects.using(database).count(),
+			'donors' : Donor.objects.using(database).count(),
+		}
+		return tracker_response(request, db, 'tracker/index.html', { 'agg' : agg, 'count' : count })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 		
@@ -198,7 +205,7 @@ def choiceoption(request,id,db='default'):
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
 		agg = ChoiceBid.objects.using(database).filter(choiceOption=id).aggregate(Sum('amount'))
 		bids = ChoiceBid.objects.using(database).values('donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__donor__firstName','donation__donor__lastName', 'donation__donor__email', 'amount', 'donation__timeReceived').filter(choiceOption=id)
-		choicebids = fixorder(choicebids, orderdict, sort, order)
+		bids = fixorder(bids, orderdict, sort, order)
 		comments = 'comments' in request.GET
 		return tracker_response(request, db, 'tracker/choiceoption.html', { 'choiceoption' : choiceoption, 'bids' : bids, 'comments' : comments, 'agg' : agg })
 	except ObjectDoesNotExist:
