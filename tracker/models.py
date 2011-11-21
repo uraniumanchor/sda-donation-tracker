@@ -99,8 +99,8 @@ class Donor(models.Model):
 		return ret
 		
 class Prize(models.Model):
-	sortKey = models.IntegerField(db_index=True)
 	name = models.CharField(max_length=64,unique=True)
+	sortKey = models.IntegerField(db_index=True)
 	image = models.URLField(max_length=1024,db_column='imageURL',null=True,blank=True)
 	description = models.TextField(max_length=1024,null=True,blank=True)
 	winner = models.ForeignKey('Donor',db_column='winner')
@@ -112,7 +112,7 @@ class Prize(models.Model):
 		
 class SpeedRun(models.Model):
 	name = models.CharField(max_length=64,unique=True)
-	sortKey = models.IntegerField(unique=True)
+	sortKey = models.IntegerField(db_index=True)
 	description = models.TextField(max_length=1024)
 	class Meta:
 		db_table = 'SpeedRun'
