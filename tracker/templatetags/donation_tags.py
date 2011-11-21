@@ -7,22 +7,139 @@ import locale
 
 register = template.Library()
 
+def sortlink(sort, order, page, style, contents):
+	def getPage(page):
+		if page == 'full':
+			return '&amp;full'
+		elif int(page) == 1: 
+			return ''
+		return '&amp;page=%d' % int(page)
+	if style:
+		return '<a href="?sort={sort}&amp;order={order}{page}" class="{style}"><span style="display:none;">{contents}</span></a>'.format(sort=sort,order=order,page=getPage(page),style=style,contents=contents)
+	else:
+		return '<a href="?sort={sort}&amp;order={order}{page}">{contents}</a>'.format(sort=sort,order=order,page=getPage(page),contents=contents)
+
 @register.tag("sort")
 def do_sort(parser, token):
+	class SortParser(template.TokenParser):
+		def sortParse(self):
+			if not self.more():
+				raise ValueError
+			sort_field = self.value()
+			page = None
+			if self.more():
+				page = self.tag()
+			if self.more():
+				raise ValueError
+			return sort_field,page
 	try:
-		tag_name, sort_field = token.split_contents()
+		sort_field,page = SortParser(token.contents).sortParse()
 	except ValueError:
-		raise template.TemplateSyntaxError('%r tag requires a single argument' % token.contents.split()[0])
+		raise template.TemplateSyntaxError('%r tag requires either one or two arguments' % token.contents.split()[0])
 	if not (sort_field[0] == sort_field[-1] and sort_field[0] in ('"', "'")):
-		raise template.TemplateSyntaxError("%r tag's argument should be in quotes" % token.contents.split()[0])
-	return SortNode(sort_field[1:-1])
+		raise template.TemplateSyntaxError("%r tag's first argument should be in quotes" % token.contents.split()[0])
+	return SortNode(sort_field[1:-1],page)
 
 class SortNode(template.Node):
-	def __init__(self, sort_field):
-		self.sort_field = sort_field
+	def __init__(self, sort, page):
+		self.sort = sort
+		if page:
+			self.page = template.Variable(page)
 	def render(self, context):
-		return '<a href="?sort=' + self.sort_field + '&amp;order=1"><img src="' + settings.MEDIA_URL + 'up.png" alt="Asc"/></a><a href="?sort=' + self.sort_field + '&amp;order=-1"><img src="' + settings.MEDIA_URL + 'down.png" alt="Dsc"/></a>'
-		
+		if self.page:
+			page = self.page.resolve(context)
+		else:
+			page = 1
+		return sortlink(self.sort, 1, page, 'asc', 'Asc') + sortlink(self.sort, -1, page, 'dsc', 'Dsc')
+
+@register.tag("pagefirst")
+@register.tag("pagefull")
+def do_pageff(parser, token):
+	try:
+		tag_name, sort, order = token.split_contents()
+	except ValueError:
+		raise template.TemplateSyntaxError('%r tag requires two arguments' % token.contents.split()[0])
+	return PageFLFNode(tag_name, sort, order)
+	
+@register.tag("pagelast")
+def do_pagel(parser, token):
+	try:
+		tag_name, sort, order, num = token.split_contents()
+	except ValueError:
+		raise template.TemplateSyntaxError('%r tag requires three arguments' % token.contents.split()[0])
+	return PageFLFNode(tag_name, sort, order, num)
+
+class PageFLFNode(template.Node):
+	def __init__(self, tag, sort, order, num='page'):
+		self.tag = tag
+		self.sort = template.Variable(sort)
+		self.order = template.Variable(order)
+		self.num = template.Variable(num)
+	def render(self, context):
+		sort = self.sort.resolve(context)
+		order = self.order.resolve(context)
+		if self.tag == 'pagefirst':
+			return sortlink(sort, order, 1, 'first', '|&lt; ')
+		elif self.tag == 'pagelast':
+			num = self.num.resolve(context)
+			return sortlink(sort, order, num, 'last', '&gt;| ')
+		elif self.tag == 'pagefull':
+			return sortlink(sort, order, 'full', None, 'View Full List')
+	
+@register.tag("pageprev")
+@register.tag("pagenext")
+def do_pagepn(parser, token):
+	try:
+		tag_name, sort, order, has, page = token.split_contents()
+	except ValueError:
+		raise template.TemplateSyntaxError('%r tag requires four arguments' % token.contents.split()[0])
+	return PagePNNode(tag_name, sort, order, has, page)
+
+class PagePNNode(template.Node):
+	dc = { 'pageprev' : '< ', 'pagenext' : '> ' }
+	def __init__(self, tag, sort, order, has, page):
+		self.tag = tag
+		self.sort = template.Variable(sort)
+		self.order = template.Variable(order)
+		self.has = template.Variable(has)
+		self.page = template.Variable(page)
+	def render(self, context):
+		has = self.has.resolve(context)
+		if has:
+			sort = self.sort.resolve(context)
+			order = self.sort.resolve(context)
+			page = self.page.resolve(context)
+			return sortlink(sort, order, page, self.tag[4:], PagePNNode.dc[self.tag])
+		return ''
+
+@register.tag("pagelist")
+def do_pagelist(parser, token):
+	try:
+		tag_name, sort, order, page, num = token.split_contents()
+	except ValueError:
+		raise template.TemplateSyntaxError('%r tag requires four arguments' % token.contents.split()[0])
+	return PageListNode(sort, order, page, num)
+	
+class PageListNode(template.Node):
+	def __init__(self, sort, order, page, num):
+		self.sort = template.Variable(sort)
+		self.order = template.Variable(order)
+		self.page = template.Variable(page)
+		self.num = template.Variable(num)
+	def render(self, context):
+		sort = self.sort.resolve(context)
+		order = self.order.resolve(context)
+		page = int(self.page.resolve(context))
+		num = self.num.resolve(context)
+		s = []
+		for i in range(1,num+1):
+			if i != page:
+				if abs(i-page) <=5 or i%10 == 0:
+					s.append(sortlink(sort, order, i, None, str(i)))
+			else:
+				s.append(str(i))
+		return ' '.join(s)
+	
 @register.tag("rendertime")
 def do_rendertime(parser, token):
 	try:
