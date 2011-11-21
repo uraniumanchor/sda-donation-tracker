@@ -107,7 +107,7 @@ class PagePNNode(template.Node):
 		has = self.has.resolve(context)
 		if has:
 			sort = self.sort.resolve(context)
-			order = self.sort.resolve(context)
+			order = self.order.resolve(context)
 			page = self.page.resolve(context)
 			return sortlink(sort, order, page, self.tag[4:], PagePNNode.dc[self.tag])
 		return ''
