@@ -150,7 +150,13 @@ forumfilter.needs_autoescape = True
 @register.filter("money")
 def money(value):
 	locale.setlocale( locale.LC_ALL, '')
-	if not value:
-		return locale.currency(0.0)
-	return locale.currency(value, symbol=True, grouping=True)
+	try:
+		if not value:
+			return locale.currency(0.0)
+		return locale.currency(value, symbol=True, grouping=True)
+	except ValueError:
+		locale.setlocale( locale.LC_MONETARY, ('en', 'us'))
+		if not value:		
+			return locale.currency(0.0)
+		return locale.currency(value, symbol=True, grouping=True)
 money.is_safe = True
