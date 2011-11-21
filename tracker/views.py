@@ -75,7 +75,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	usernames = request.user.has_perm('tracker.view_usernames') and 'nonames' not in request.GET
 	emails = request.user.has_perm('tracker.view_emails') and 'noemails' not in request.GET
 	showtime = request.user.has_perm('tracker.show_rendertime')
-	canfull = request.user.has_perm('donations.view_full_list')
+	canfull = request.user.has_perm('tracker.view_full_list')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
 	context = RequestContext(request)
 	language = translation.get_language_from_request(request)
@@ -247,7 +247,7 @@ def donorindex(request,db='default'):
 		database = checkdb(db)
 		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(amount=Sum('donation__amount'), count=Count('donation__amount'), max=Max('donation__amount'), avg=Avg('donation__amount'))
 		donors = fixorder(donors, orderdict, sort, order)
-		fulllist = request.user.has_perm('donations.view_full_list') and 'full' in request.GET
+		fulllist = request.user.has_perm('tracker.view_full_list') and 'full' in request.GET
 		paginator = Paginator(donors,50)
 		if fulllist:
 			pageinfo = { 'paginator' : paginator, 'has_previous' : False, 'has_next' : False, 'num_pages' : paginator.num_pages }
@@ -293,7 +293,7 @@ def donationindex(request,db='default'):
 		database = checkdb(db)
 		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('id', 'domain', 'timeReceived', 'amount', 'comment','donor','donor__lastName','donor__firstName','donor__email')
 		donations = fixorder(donations, orderdict, sort, order)
-		fulllist = request.user.has_perm('donations.view_full_list') and 'full' in request.GET
+		fulllist = request.user.has_perm('tracker.view_full_list') and 'full' in request.GET
 		paginator = Paginator(donations,50)
 		if fulllist:
 			pageinfo = { 'paginator' : paginator, 'has_previous' : False, 'has_next' : False, 'num_pages' : paginator.num_pages }
