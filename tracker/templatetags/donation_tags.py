@@ -11,13 +11,13 @@ def sortlink(sort, order, page, style, contents):
 	def getPage(page):
 		if page == 'full':
 			return '&amp;full'
-		elif int(page) == 1: 
+		elif int(page) < 2: 
 			return ''
 		return '&amp;page=%d' % int(page)
 	if style:
-		return '<a href="?sort={sort}&amp;order={order}{page}" class="{style}"><span style="display:none;">{contents}</span></a>'.format(sort=sort,order=order,page=getPage(page),style=style,contents=contents)
+		return '<a href="?sort=%s&amp;order=%s%s" class="%s"><span style="display:none;">%s</span></a>' % (sort,order,getPage(page),style,contents)
 	else:
-		return '<a href="?sort={sort}&amp;order={order}{page}">{contents}</a>'.format(sort=sort,order=order,page=getPage(page),contents=contents)
+		return '<a href="?sort=%s&amp;order=%s%s">%s</a>' % (sort,order,getPage(page),contents)
 
 @register.tag("sort")
 def do_sort(parser, token):
