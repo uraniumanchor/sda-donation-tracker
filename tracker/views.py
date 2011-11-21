@@ -3,6 +3,7 @@ from django.shortcuts import render,render_to_response
 from django.db.models import Count,Sum,Max,Avg
 from django.db.utils import ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.cache import cache
 from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse,HttpResponseRedirect
@@ -123,7 +124,7 @@ def eventlist(request):
 def index(request,db=''):
 	try:
 		database = checkdb(db)
-		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
+		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(amount=Sum('amount'), count=Count('amount'), max=Max('amount'), avg=Avg('amount'))
 		count = { 
 			'games' : SpeedRun.objects.using(database).count(), 
 			'prizes' : Prize.objects.using(database).count(),
@@ -134,7 +135,8 @@ def index(request,db=''):
 		return tracker_response(request, db, 'tracker/index.html', { 'agg' : agg, 'count' : count })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
-		
+
+@never_cache
 def setusername(request):
 	if not request.user.is_authenticated or request.user.username[:10]!='openiduser' or request.method != 'POST':
 		return redirect(request)
@@ -148,19 +150,29 @@ def setusername(request):
 def challengeindex(request,db):
 	try:
 		database = checkdb(db)
-		challenges = Challenge.objects.using(database).values('id', 'name', 'goal', 'speedRun', 'speedRun__name').order_by('speedRun__name').annotate(Sum('challengebid__amount'), Count('challengebid'))
-		agg = ChallengeBid.objects.using(database).aggregate(Sum('amount'), Count('amount'))
+		challenges = Challenge.objects.using(database).values('id', 'name', 'goal', 'speedRun', 'speedRun__name').order_by('speedRun__name').annotate(amount=Sum('challengebid__amount'), count=Count('challengebid'))
+		agg = ChallengeBid.objects.using(database).aggregate(amount=Sum('amount'), count=Count('amount'))
 		return tracker_response(request, db, 'tracker/challengeindex.html', { 'challenges' : challenges, 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
 def challenge(request,id,db):
 	try:
+		orderdict = { 
+			'name'   : ('donation__donor__lastName', 'donation__donor__firstName'),
+			'amount' : ('amount', ),
+			'time'   : ('donation__timeReceived', ),
+		}
+		sort = request.GET.get('sort', 'time')
+		if sort not in orderdict:
+			sort = 'time'
+		order = int(request.GET.get('order', '-1'))
 		database = checkdb(db)
 		challenge = Challenge.objects.get(pk=id)
 		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__timeReceived', 'donation__donor__firstName', 'donation__donor__lastName', 'donation__donor__email').order_by('-donation__timeReceived')
+		bids = fixorder(bids, orderdict, sort, order)
 		comments = 'comments' in request.GET
-		agg = ChallengeBid.objects.using(database).filter(challenge__exact=id).aggregate(Sum('amount'), Count('amount'))
+		agg = ChallengeBid.objects.using(database).filter(challenge__exact=id).aggregate(amount=Sum('amount'), count=Count('amount'))
 		return tracker_response(request, db, 'tracker/challenge.html', { 'challenge' : challenge, 'comments' : comments, 'bids' : bids, 'agg' : agg })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
@@ -170,8 +182,8 @@ def challenge(request,id,db):
 def choiceindex(request,db):
 	try:
 		database = checkdb(db)
-		choices = Choice.objects.using(database).values('id', 'name', 'speedRun', 'speedRun__name', 'choiceoption', 'choiceoption__name').annotate(Sum('choiceoption__choicebid__amount'), Count('choiceoption__choicebid')).order_by('speedRun__name','name','-choiceoption__choicebid__amount__sum')
-		agg = ChoiceBid.objects.using(database).aggregate(Sum('amount'), Count('amount'))
+		choices = Choice.objects.using(database).values('id', 'name', 'speedRun', 'speedRun__name', 'choiceoption', 'choiceoption__name').annotate(amount=Sum('choiceoption__choicebid__amount'), count=Count('choiceoption__choicebid')).order_by('speedRun__name','name','-amount')
+		agg = ChoiceBid.objects.using(database).aggregate(amount=Sum('amount'), count=Count('amount'))
 		return tracker_response(request, db, 'tracker/choiceindex.html', { 'choices' : choices, 'agg' : agg })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
@@ -181,8 +193,8 @@ def choice(request,id,db='default'):
 		database = checkdb(db)
 		choice = Choice.objects.using(database).get(pk=id)
 		choicebids = ChoiceBid.objects.using(database).filter(choiceOption__choice=id).values('choiceOption', 'donation', 'donation__donor', 'donation__donor__lastName', 'donation__donor__firstName', 'donation__donor__email', 'donation__timeReceived', 'donation__comment', 'donation__commentState', 'amount').order_by('-donation__timeReceived')
-		options = ChoiceOption.objects.using(database).filter(choice=id).annotate(Sum('choicebid__amount'), Count('choicebid__amount'))
-		agg = ChoiceBid.objects.using(database).filter(choiceOption__choice=id).aggregate(Sum('amount'), Count('amount'))
+		options = ChoiceOption.objects.using(database).filter(choice=id).annotate(amount=Sum('choicebid__amount'), count=Count('choicebid__amount'))
+		agg = ChoiceBid.objects.using(database).filter(choiceOption__choice=id).aggregate(amount=Sum('amount'), count=Count('amount'))
 		comments = 'comments' in request.GET
 		return tracker_response(request, db, 'tracker/choice.html', { 'choice' : choice, 'choicebids' : choicebids, 'comments' : comments, 'options' : options, 'agg' : agg })
 	except ObjectDoesNotExist:
@@ -203,7 +215,7 @@ def choiceoption(request,id,db='default'):
 		order = int(request.GET.get('order', '-1'))
 		database = checkdb(db)
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
-		agg = ChoiceBid.objects.using(database).filter(choiceOption=id).aggregate(Sum('amount'))
+		agg = ChoiceBid.objects.using(database).filter(choiceOption=id).aggregate(amount=Sum('amount'))
 		bids = ChoiceBid.objects.using(database).values('donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__donor__firstName','donation__donor__lastName', 'donation__donor__email', 'amount', 'donation__timeReceived').filter(choiceOption=id)
 		bids = fixorder(bids, orderdict, sort, order)
 		comments = 'comments' in request.GET
@@ -230,9 +242,9 @@ def donorindex(request,db='default'):
 			sort = 'name'
 		order = int(request.GET.get('order', '1'))
 		database = checkdb(db)
-		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(Sum('donation__amount'), Count('donation__amount'), Max('donation__amount'), Avg('donation__amount'))
+		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(amount=Sum('donation__amount'), count=Count('donation__amount'), max=Max('donation__amount'), avg=Avg('donation__amount'))
 		donors = fixorder(donors, orderdict, sort, order)
-		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Count('amount'))
+		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(count=Count('amount'))
 		return tracker_response(request, db, 'tracker/donorindex.html', { 'donors' : donors, 'agg' : agg, 'sort' : sort, 'order' : order })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
@@ -243,7 +255,7 @@ def donor(request,id,db='default'):
 		donor = Donor.objects.using(database).get(pk=id)
 		donations = Donation.objects.using(database).filter(donor__exact=id)
 		comments = 'comments' in request.GET
-		agg = donations.aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
+		agg = donations.aggregate(amount=Sum('amount'), count=Count('amount'), max=Max('amount'), avg=Avg('amount'))
 		return tracker_response(request, db, 'tracker/donor.html', { 'donor' : donor, 'donations' : donations, 'agg' : agg, 'comments' : comments })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
@@ -267,7 +279,7 @@ def donationindex(request,db='default'):
 		fulllist = request.user.has_perm('donations.view_full_list') and 'recent' not in request.GET
 		if not fulllist:
 			donations = donations#[:50]
-		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(Sum('amount'), Count('amount'), Max('amount'), Avg('amount'))
+		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(amount=Sum('amount'), count=Count('amount'), max=Max('amount'), avg=Avg('amount'))
 		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations, 'agg' : agg, 'fulllist' : fulllist, 'sort' : sort, 'order' : order })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
@@ -297,8 +309,8 @@ def game(request,id,db='default'):
 	try:
 		database = checkdb(db)
 		game = SpeedRun.objects.using(database).get(pk=id)
-		challenges = Challenge.objects.using(database).filter(speedRun=id).annotate(Sum('challengebid__amount'), Count('challengebid'))
-		choices = Choice.objects.using(database).filter(speedRun=id).values('id', 'name', 'choiceoption', 'choiceoption__name',).annotate(Sum('choiceoption__choicebid__amount'), Count('choiceoption__choicebid')).order_by('name', '-choiceoption__choicebid__amount__sum')
+		challenges = Challenge.objects.using(database).filter(speedRun=id).annotate(amount=Sum('challengebid__amount'), count=Count('challengebid'))
+		choices = Choice.objects.using(database).filter(speedRun=id).values('id', 'name', 'choiceoption', 'choiceoption__name',).annotate(amount=Sum('choiceoption__choicebid__amount'), count=Count('choiceoption__choicebid')).order_by('name', '-amount')
 		return tracker_response(request, db, 'tracker/game.html', { 'game' : game, 'challenges' : challenges, 'choices' : choices })
 	except ObjectDoesNotExist:
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
