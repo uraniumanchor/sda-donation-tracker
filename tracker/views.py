@@ -4,6 +4,7 @@ from django.db.models import Count,Sum,Max,Avg
 from django.db.utils import ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse,HttpResponseRedirect
@@ -74,7 +75,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	usernames = request.user.has_perm('tracker.view_usernames') and 'nonames' not in request.GET
 	emails = request.user.has_perm('tracker.view_emails') and 'noemails' not in request.GET
 	showtime = request.user.has_perm('tracker.show_rendertime')
-	fulllist = request.user.has_perm('donations.view_full_list')
+	canfull = request.user.has_perm('donations.view_full_list')
 	bidtracker = request.user.has_perms([u'tracker.change_challenge', u'tracker.delete_challenge', u'tracker.change_choiceoption', u'tracker.delete_choice', u'tracker.delete_challengebid', u'tracker.add_choiceoption', u'tracker.change_choicebid', u'tracker.add_challengebid', u'tracker.add_choice', u'tracker.add_choicebid', u'tracker.delete_choiceoption', u'tracker.delete_choicebid', u'tracker.add_challenge', u'tracker.change_choice', u'tracker.change_challengebid'])
 	context = RequestContext(request)
 	language = translation.get_language_from_request(request)
@@ -97,6 +98,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 		'dbtitle' : settings.DATABASES[database]['COMMENT'],
 		'usernames' : usernames,
 		'emails' : emails,
+		'canfull' : canfull,
 		'bidtracker' : bidtracker,
 		'djangoversion' : dv(),
 		'pythonversion' : pv(),
@@ -114,7 +116,7 @@ def tracker_response(request, db=None, template='tracker/index.html', dict={}, s
 	except Exception, e:
 		if request.user.is_staff and not settings.DEBUG:
 			return HttpResponse(unicode(type(e)) + '\n\n' + unicode(e), mimetype='text/plain', status=500)
-		raise e
+		raise
 	
 def eventlist(request):
 	dbs = settings.DATABASES.copy()
@@ -237,6 +239,7 @@ def donorindex(request,db='default'):
 			'max'   : ('donation__amount__max',            ),
 			'avg'   : ('donation__amount__avg',            )
 		}
+		page = request.GET.get('page', '1')
 		sort = request.GET.get('sort', 'name')
 		if sort not in orderdict:
 			sort = 'name'
@@ -244,8 +247,21 @@ def donorindex(request,db='default'):
 		database = checkdb(db)
 		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(amount=Sum('donation__amount'), count=Count('donation__amount'), max=Max('donation__amount'), avg=Avg('donation__amount'))
 		donors = fixorder(donors, orderdict, sort, order)
+		fulllist = request.user.has_perm('donations.view_full_list') and 'full' in request.GET
+		paginator = Paginator(donors,50)
+		if fulllist:
+			pageinfo = { 'paginator' : paginator, 'has_previous' : False, 'has_next' : False, 'num_pages' : paginator.num_pages }
+			page = 0
+		else:
+			try:
+				pageinfo = paginator.page(page)
+			except PageIsNotAnInteger:
+				pageinfo = paginator.page(1)
+			except EmptyPage:
+				pageinfo = paginator.page(paginator.num_pages)
+			donors = pageinfo.object_list
 		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(count=Count('amount'))
-		return tracker_response(request, db, 'tracker/donorindex.html', { 'donors' : donors, 'agg' : agg, 'sort' : sort, 'order' : order })
+		return tracker_response(request, db, 'tracker/donorindex.html', { 'donors' : donors, 'pageinfo' : pageinfo, 'page' : page, 'fulllist' : fulllist, 'agg' : agg, 'sort' : sort, 'order' : order })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 	
@@ -269,6 +285,7 @@ def donationindex(request,db='default'):
 			'amount' : ('amount', ),
 			'time'   : ('timeReceived', ),
 		}
+		page = request.GET.get('page', '1')
 		sort = request.GET.get('sort', 'time')
 		if sort not in orderdict:
 			sort = 'time'
@@ -276,11 +293,21 @@ def donationindex(request,db='default'):
 		database = checkdb(db)
 		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('id', 'domain', 'timeReceived', 'amount', 'comment','donor','donor__lastName','donor__firstName','donor__email')
 		donations = fixorder(donations, orderdict, sort, order)
-		fulllist = request.user.has_perm('donations.view_full_list') and 'recent' not in request.GET
-		if not fulllist:
-			donations = donations#[:50]
+		fulllist = request.user.has_perm('donations.view_full_list') and 'full' in request.GET
+		paginator = Paginator(donations,50)
+		if fulllist:
+			pageinfo = { 'paginator' : paginator, 'has_previous' : False, 'has_next' : False, 'num_pages' : paginator.num_pages }
+			page = 0
+		else:
+			try:
+				pageinfo = paginator.page(page)
+			except PageIsNotAnInteger:
+				pageinfo = paginator.page(1)
+			except EmptyPage:
+				pageinfo = paginator.page(paginator.num_pages)
+			donations = pageinfo.object_list
 		agg = Donation.objects.using(database).filter(amount__gt="0.0").aggregate(amount=Sum('amount'), count=Count('amount'), max=Max('amount'), avg=Avg('amount'))
-		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations, 'agg' : agg, 'fulllist' : fulllist, 'sort' : sort, 'order' : order })
+		return tracker_response(request, db, 'tracker/donationindex.html', { 'donations' : donations, 'pageinfo' :  pageinfo, 'agg' : agg, 'fulllist' : fulllist, 'sort' : sort, 'order' : order, 'page' : page })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
 
