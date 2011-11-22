@@ -111,34 +111,6 @@ class PagePNNode(template.Node):
 			page = self.page.resolve(context)
 			return sortlink(sort, order, page, self.tag[4:], PagePNNode.dc[self.tag])
 		return ''
-
-@register.tag("pagelist")
-def do_pagelist(parser, token):
-	try:
-		tag_name, sort, order, page, num = token.split_contents()
-	except ValueError:
-		raise template.TemplateSyntaxError('%r tag requires four arguments' % token.contents.split()[0])
-	return PageListNode(sort, order, page, num)
-	
-class PageListNode(template.Node):
-	def __init__(self, sort, order, page, num):
-		self.sort = template.Variable(sort)
-		self.order = template.Variable(order)
-		self.page = template.Variable(page)
-		self.num = template.Variable(num)
-	def render(self, context):
-		sort = self.sort.resolve(context)
-		order = self.order.resolve(context)
-		page = int(self.page.resolve(context))
-		num = self.num.resolve(context)
-		s = []
-		for i in range(1,num+1):
-			if i != page:
-				if abs(i-page) <=5 or i%10 == 0:
-					s.append(sortlink(sort, order, i, None, str(i)))
-			else:
-				s.append(str(i))
-		return ' '.join(s)
 	
 @register.tag("rendertime")
 def do_rendertime(parser, token):
@@ -253,7 +225,7 @@ class EmailNode(template.Node):
 				return ''
 		except (template.VariableDoesNotExist, TypeError), e:
 			return ''
-
+			
 @register.filter("forumfilter")
 def forumfilter(value,autoescape=None):
 	if autoescape:
@@ -277,3 +249,17 @@ def money(value):
 			return locale.currency(0.0)
 		return locale.currency(value, symbol=True, grouping=True)
 money.is_safe = True
+
+@register.filter("abs")
+def filabs(value,arg):
+	try:
+		return abs(int(value)-int(arg))
+	except ValueError:
+		raise template.TemplateSyntaxError('abs requires integer arguments')
+
+@register.filter("mod")
+def filmod(value,arg):
+	try:
+		return int(value) % int(arg)
+	except ValueError:
+		raise template.TemplateSyntaxError('mod requires integer arguments')

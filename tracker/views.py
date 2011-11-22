@@ -296,7 +296,7 @@ def donationindex(request,db='default'):
 		fulllist = request.user.has_perm('tracker.view_full_list') and 'full' in request.GET
 		paginator = Paginator(donations,50)
 		if fulllist:
-			pageinfo = { 'paginator' : paginator, 'has_previous' : False, 'has_next' : False, 'num_pages' : paginator.num_pages }
+			pageinfo = { 'paginator' : paginator, 'has_previous' : False, 'has_next' : False }
 			page = 0
 		else:
 			try:
