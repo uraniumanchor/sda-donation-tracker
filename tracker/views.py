@@ -234,10 +234,10 @@ def choicebidadd(request,id,db='default'):
 def donorindex(request,db='default'):
 	try:
 		orderdict = { 
-			'name'  : ('lastName',              'firstName'),
-			'total' : ('donation__amount__sum',            ),
-			'max'   : ('donation__amount__max',            ),
-			'avg'   : ('donation__amount__avg',            )
+			'name'  : ('lastName', 'firstName'),
+			'total' : ('amount',   ),
+			'max'   : ('max',      ),
+			'avg'   : ('avg',      )
 		}
 		page = request.GET.get('page', '1')
 		sort = request.GET.get('sort', 'name')
