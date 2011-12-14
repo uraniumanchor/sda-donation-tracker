@@ -46,10 +46,9 @@ class SortNode(template.Node):
 		if page:
 			self.page = template.Variable(page)
 	def render(self, context):
-		if self.page:
-			page = self.page.resolve(context)
-		else:
-			page = 1
+		page = getattr(self, 'page', 1)
+		if page != 1:
+			page = page.resolve(context)
 		return sortlink(self.sort, 1, page, 'asc', 'Asc') + sortlink(self.sort, -1, page, 'dsc', 'Dsc')
 
 @register.tag("pagefirst")
@@ -226,7 +225,8 @@ class EmailNode(template.Node):
 		except (template.VariableDoesNotExist, TypeError), e:
 			return ''
 			
-@register.filter("forumfilter")
+@register.filter
+#@stringfilter
 def forumfilter(value,autoescape=None):
 	if autoescape:
 		esc = conditional_escape
@@ -236,7 +236,7 @@ def forumfilter(value,autoescape=None):
 forumfilter.is_safe = True
 forumfilter.needs_autoescape = True
 
-@register.filter("money")
+@register.filter
 def money(value):
 	locale.setlocale( locale.LC_ALL, '')
 	try:

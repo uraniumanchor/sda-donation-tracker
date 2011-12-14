@@ -1,6 +1,6 @@
 # Create your views here.
 from django.shortcuts import render,render_to_response
-from django.db.models import Count,Sum,Max,Avg
+from django.db.models import Count,Sum,Max,Avg,Q
 from django.db.utils import ConnectionDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
@@ -40,10 +40,6 @@ def checkdb(db):
 	
 def fixorder(queryset, orderdict, sort, order):
 	queryset = queryset.order_by(*orderdict[sort])
-	#if len(orderdict[sort]) == 2:
-	#	queryset = queryset.order_by(orderdict[sort][0], orderdict[sort][1])
-	#else:
-	#	queryset = queryset.order_by(orderdict[sort][0])
 	if order == -1:
 		queryset = queryset.reverse()
 	return queryset
@@ -65,6 +61,7 @@ def login(request):
 			auth_login(request, form.get_user())
 	return django.shortcuts.redirect(redirect_to)
 
+@never_cache
 def logout(request):
 	auth_logout(request)
 	return django.shortcuts.redirect(request.META.get('HTTP_REFERER', '/'))	
@@ -148,7 +145,7 @@ def setusername(request):
 		request.user.save()
 		return django.shortcuts.redirect(request.POST['next'])
 	return tracker_response(request, template='tracker/username.html', dict={ 'usernameform' : usernameform })
-	
+
 def challengeindex(request,db):
 	try:
 		database = checkdb(db)
@@ -168,7 +165,10 @@ def challenge(request,id,db):
 		sort = request.GET.get('sort', 'time')
 		if sort not in orderdict:
 			sort = 'time'
-		order = int(request.GET.get('order', '-1'))
+		try:
+			order = int(request.GET.get('order', '-1'))
+		except ValueError:
+			order = -1
 		database = checkdb(db)
 		challenge = Challenge.objects.get(pk=id)
 		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__timeReceived', 'donation__donor__firstName', 'donation__donor__lastName', 'donation__donor__email').order_by('-donation__timeReceived')
@@ -214,7 +214,10 @@ def choiceoption(request,id,db='default'):
 		sort = request.GET.get('sort', 'time')
 		if sort not in orderdict:
 			sort = 'time'
-		order = int(request.GET.get('order', '-1'))
+		try:
+			order = int(request.GET.get('order', '-1'))
+		except ValueError:
+			order = -1
 		database = checkdb(db)
 		choiceoption = ChoiceOption.objects.using(database).get(pk=id)
 		agg = ChoiceBid.objects.using(database).filter(choiceOption=id).aggregate(amount=Sum('amount'))
@@ -239,11 +242,17 @@ def donorindex(request,db='default'):
 			'max'   : ('max',      ),
 			'avg'   : ('avg',      )
 		}
-		page = request.GET.get('page', '1')
+		try:
+			page = int(request.GET.get('page', 1))
+		except ValueError:
+			page = 1
 		sort = request.GET.get('sort', 'name')
 		if sort not in orderdict:
 			sort = 'name'
-		order = int(request.GET.get('order', '1'))
+		try:
+			order = int(request.GET.get('order', 1))
+		except ValueError:
+			order = 1
 		database = checkdb(db)
 		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(amount=Sum('donation__amount'), count=Count('donation__amount'), max=Max('donation__amount'), avg=Avg('donation__amount'))
 		donors = fixorder(donors, orderdict, sort, order)
@@ -285,11 +294,17 @@ def donationindex(request,db='default'):
 			'amount' : ('amount', ),
 			'time'   : ('timeReceived', ),
 		}
-		page = request.GET.get('page', '1')
+		try:
+			page = int(request.GET.get('page', 1))
+		except ValueError:
+			page = 1
 		sort = request.GET.get('sort', 'time')
 		if sort not in orderdict:
 			sort = 'time'
-		order = int(request.GET.get('order', '-1'))
+		try:
+			order = int(request.GET.get('order', -1))
+		except ValueError:
+			order = -1
 		database = checkdb(db)
 		donations = Donation.objects.using(database).filter(amount__gt="0.0").values('id', 'domain', 'timeReceived', 'amount', 'comment','donor','donor__lastName','donor__firstName','donor__email')
 		donations = fixorder(donations, orderdict, sort, order)
@@ -347,7 +362,10 @@ def game(request,id,db='default'):
 def prizeindex(request,db='default'):
 	try:
 		database = checkdb(db)
-		prizes = Prize.objects.using(database).values('name', 'description', 'image', 'winner', 'winner__firstName', 'winner__lastName', 'winner__email')
+		prizes = Prize.objects.using(database).values('name', 'image', 'description', 'winner', 'winner__firstName', 'winner__lastName', 'winner__email')
+		prizesun = Prize.objects.using(database).values('name', 'image', 'description').filter(winner__isnull=True)
+		prizes = list(prizes)
+		prizes += prizesun
 		return tracker_response(request, db, 'tracker/prizeindex.html', { 'prizes' : prizes })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
