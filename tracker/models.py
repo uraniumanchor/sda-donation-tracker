@@ -103,6 +103,9 @@ class Prize(models.Model):
 	sortKey = models.IntegerField(db_index=True)
 	image = models.URLField(max_length=1024,db_column='imageURL',null=True,blank=True)
 	description = models.TextField(max_length=1024,null=True,blank=True)
+	minimumBid = models.DecimalField(decimal_places=2,max_digits=20,default=5.0)
+	startGame = models.ForeignKey('SpeedRun',db_column='startGame',related_name='prizeStart')
+	endGame = models.ForeignKey('SpeedRun',db_column='endGame',related_name='prizeEnd')
 	winner = models.ForeignKey('Donor',db_column='winner')
 	class Meta:
 		db_table = 'Prize'

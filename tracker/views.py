@@ -170,8 +170,8 @@ def challenge(request,id,db):
 		except ValueError:
 			order = -1
 		database = checkdb(db)
-		challenge = Challenge.objects.get(pk=id)
-		bids = ChallengeBid.objects.filter(challenge__exact=id).values('amount', 'donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__timeReceived', 'donation__donor__firstName', 'donation__donor__lastName', 'donation__donor__email').order_by('-donation__timeReceived')
+		challenge = Challenge.objects.using(database).get(pk=id)
+		bids = ChallengeBid.objects.using(database).filter(challenge__exact=id).values('amount', 'donation', 'donation__comment', 'donation__commentState', 'donation__donor', 'donation__timeReceived', 'donation__donor__firstName', 'donation__donor__lastName', 'donation__donor__email').order_by('-donation__timeReceived')
 		bids = fixorder(bids, orderdict, sort, order)
 		comments = 'comments' in request.GET
 		agg = ChallengeBid.objects.using(database).filter(challenge__exact=id).aggregate(amount=Sum('amount'), count=Count('amount'))
@@ -255,6 +255,7 @@ def donorindex(request,db='default'):
 			order = 1
 		database = checkdb(db)
 		donors = Donor.objects.using(database).filter(lastName__isnull=False).annotate(amount=Sum('donation__amount'), count=Count('donation__amount'), max=Max('donation__amount'), avg=Avg('donation__amount'))
+		print donors
 		donors = fixorder(donors, orderdict, sort, order)
 		fulllist = request.user.has_perm('tracker.view_full_list') and 'full' in request.GET
 		paginator = Paginator(donors,50)
@@ -358,14 +359,35 @@ def game(request,id,db='default'):
 		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
-	
+		
 def prizeindex(request,db='default'):
 	try:
 		database = checkdb(db)
-		prizes = Prize.objects.using(database).values('name', 'image', 'description', 'winner', 'winner__firstName', 'winner__lastName', 'winner__email')
-		prizesun = Prize.objects.using(database).values('name', 'image', 'description').filter(winner__isnull=True)
-		prizes = list(prizes)
-		prizes += prizesun
+		# there has to be a better way to do this
+		prizes1 = Prize.objects.using(database).values('id', 'name', 'sortKey', 'image', 'minimumBid', 'startGame', 'startGame__name', 'endGame', 'endGame__name', 'winner', 'winner__firstName', 'winner__lastName', 'winner__email')
+		prizes2 = Prize.objects.using(database).values('id', 'name', 'sortKey', 'image', 'minimumBid').filter(winner__isnull=True,startGame__isnull=True)
+		prizes3 = Prize.objects.using(database).values('id', 'name', 'sortKey', 'image', 'minimumBid', 'startGame', 'startGame__name', 'endGame', 'endGame__name').filter(winner__isnull=True)
+		prizes4 = Prize.objects.using(database).values('id', 'name', 'sortKey', 'image', 'minimumBid', 'winner', 'winner__firstName', 'winner__lastName', 'winner__email').filter(startGame__isnull=True)
+		prizes = list(prizes1) + list(prizes2) + list(prizes3) + list(prizes4)
+		prizes.sort(key=lambda x: x['sortKey'])
 		return tracker_response(request, db, 'tracker/prizeindex.html', { 'prizes' : prizes })
+	except ConnectionDoesNotExist:
+		return tracker_response(request, template='tracker/baddatabase.html', status=404)
+
+def prize(request,id,db='default'):
+	try:
+		database = checkdb(db)
+		prize = Prize.objects.using(database).filter(id=id).values('name', 'image', 'description', 'minimumBid', 'startGame', 'endGame', 'winner')[0]
+		games = None
+		winner = None
+		if prize['startGame']:
+			startGame = SpeedRun.objects.using(database).get(pk=prize['startGame'])
+			endGame = SpeedRun.objects.using(database).get(pk=prize['endGame'])
+			games = SpeedRun.objects.using(database).filter(sortKey__gte=startGame.sortKey,sortKey__lte=endGame.sortKey)
+		if prize['winner']:
+			winner = Donor.objects.using(database).get(pk=prize['winner'])
+		return tracker_response(request, db, 'tracker/prize.html', { 'prize' : prize, 'games' : games, 'winner' : winner })
+	except ObjectDoesNotExist:
+		return tracker_response(request, db, template='tracker/badobject.html', status=404)
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)
