@@ -115,6 +115,7 @@ class Prize(models.Model):
 		
 class SpeedRun(models.Model):
 	name = models.CharField(max_length=64,unique=True)
+	runners = models.CharField(max_length=1024)
 	sortKey = models.IntegerField(db_index=True)
 	description = models.TextField(max_length=1024)
 	startTime = models.DateTimeField()
