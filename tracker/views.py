@@ -343,7 +343,7 @@ def donation(request,id,db='default'):
 def gameindex(request,db='default'):
 	try:
 		database = checkdb(db)
-		games = SpeedRun.objects.using(database).all()
+		games = SpeedRun.objects.using(database).all().annotate(choices=Sum('choice'), challenges=Sum('challenge'))
 		return tracker_response(request, db, 'tracker/gameindex.html', { 'games' : games })
 	except ConnectionDoesNotExist:
 		return tracker_response(request, template='tracker/baddatabase.html', status=404)

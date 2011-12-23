@@ -117,6 +117,8 @@ class SpeedRun(models.Model):
 	name = models.CharField(max_length=64,unique=True)
 	sortKey = models.IntegerField(db_index=True)
 	description = models.TextField(max_length=1024)
+	startTime = models.DateTimeField()
+	endTime = models.DateTimeField()
 	class Meta:
 		db_table = 'SpeedRun'
 		verbose_name = 'Speed Run'
