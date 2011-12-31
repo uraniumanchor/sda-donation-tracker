@@ -123,7 +123,7 @@ class SpeedRun(models.Model):
 	class Meta:
 		db_table = 'SpeedRun'
 		verbose_name = 'Speed Run'
-		ordering = [ 'sortKey' ]
+		ordering = [ 'startTime' ]
 	def __unicode__(self):
 		return unicode(self.name)
 		
